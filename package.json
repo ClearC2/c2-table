@@ -2,14 +2,26 @@
   "name": "c2-table",
   "version": "1.0.0",
   "description": "a reactjs table component",
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucket.org/dadamssg/c2-table"
+  },
   "main": "index.js",
   "scripts": {
-    "build": "webpack",
-    "start": "node_modules/.bin/webpack-dev-server --inline --content-base dist --history-api-fallback"
+    "start": "cd example && ../node_modules/.bin/webpack-dev-server --inline --content-base dist --history-api-fallback",
+    "compile": "babel -d lib/ src/",
+    "prepublish": "npm run compile"
   },
   "author": "David Adams",
   "license": "ISC",
   "devDependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.8",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-stage-0": "^6.16.0",
+    "react-dom": "^15.4.1",
     "webpack": "github:webpack/webpack#v2.1.0-beta.27",
     "webpack-dev-server": "github:webpack/webpack-dev-server#v2.1.0-beta.12"
   }
