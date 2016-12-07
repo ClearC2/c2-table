@@ -8,7 +8,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "cd example && ../node_modules/.bin/webpack-dev-server --inline --content-base dist --history-api-fallback",
+    "start": "cd example && webpack-dev-server --inline --content-base dist --history-api-fallback",
     "compile": "babel -d lib/ src/",
     "prepublish": "npm run compile"
   },
