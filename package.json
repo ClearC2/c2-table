@@ -8,7 +8,7 @@
   },
   "main": "lib/Table.js",
   "scripts": {
-    "start": "cd example && webpack-dev-server --inline --content-base dist --history-api-fallback",
+    "start": "cd example && webpack-dev-server --inline --content-base dist --history-api-fallback --port 8081",
     "compile": "babel -d lib/ src/",
     "prepublish": "npm run compile"
   },
@@ -24,5 +24,9 @@
     "react-dom": "^15.4.1",
     "webpack": "github:webpack/webpack#v2.1.0-beta.27",
     "webpack-dev-server": "github:webpack/webpack-dev-server#v2.1.0-beta.12"
+  },
+  "peerDependencies": {
+    "react": "^0.14.0 || ^15.0.0-rc || ^15.0.0",
+    "react-dom": "^0.14.0 || ^15.0.0-rc || ^15.0.0"
   }
 }
