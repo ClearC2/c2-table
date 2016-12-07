@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import { render } from 'react-dom'
-import Foo from '../../src/components/Foo'
+import {Foo} from '../../src/Table'
 
 class FooBar extends Component {
   render() {

@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://bitbucket.org/dadamssg/c2-table"
   },
-  "main": "index.js",
+  "main": "lib/Table.js",
   "scripts": {
     "start": "cd example && webpack-dev-server --inline --content-base dist --history-api-fallback",
     "compile": "babel -d lib/ src/",
