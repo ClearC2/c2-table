@@ -1,0 +1,16 @@
+{
+  "name": "c2-table",
+  "version": "1.0.0",
+  "description": "a reactjs table component",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack",
+    "start": "node_modules/.bin/webpack-dev-server --inline --content-base dist --history-api-fallback"
+  },
+  "author": "David Adams",
+  "license": "ISC",
+  "devDependencies": {
+    "webpack": "github:webpack/webpack#v2.1.0-beta.27",
+    "webpack-dev-server": "github:webpack/webpack-dev-server#v2.1.0-beta.12"
+  }
+}
