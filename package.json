@@ -4,7 +4,7 @@
   "description": "a reactjs table component",
   "repository": {
     "type": "git",
-    "url": "https://bitbucket.org/dadamssg/c2-table"
+    "url": "https://github.com/ClearC2/c2-table"
   },
   "main": "lib/Table.js",
   "scripts": {
