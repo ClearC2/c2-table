@@ -1,36 +1,71 @@
 import React, {Component, PropTypes} from 'react'
 
+const defaultClickableClass = 'clickable'
+
+const ColumnOrColumnGroup = PropTypes.arrayOf((propValue, key) => {
+  const type = propValue[key].type
+  if (type !== Column && type !== ColumnGroup) {
+    throw new Error('<Table> can only have <Column> and <ColumnGroup> as children. ')
+  }
+})
+
+const StringOrFunc = PropTypes.oneOfType([
+  PropTypes.string,
+  PropTypes.func
+])
+
 class Header extends Component {
-  constructor(props) {
+  static propTypes = {
+    id: PropTypes.string.isRequired,
+    orderColumn: PropTypes.string,
+    orderDir: PropTypes.string,
+    setOrderColumn: PropTypes.func.isRequired,
+    setOrderDir: PropTypes.func.isRequired,
+    sortOnHeaderClick: PropTypes.bool,
+    clickableClass: PropTypes.string,
+    children: ColumnOrColumnGroup,
+    hasGroups: PropTypes.bool,
+    className: PropTypes.string,
+    isFirstRow: PropTypes.bool,
+    header: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.func
+    ])
+  }
+  constructor (props) {
     super(props)
     this.onHeaderClick = this.onHeaderClick.bind(this)
   }
 
-  headerContent() {
-    switch(typeof(this.props.header)) {
-      case 'function':
-        return this.props.header(this.getSortSymbol(), this.onHeaderClick)
-      default:
-        return <span>{this.props.header || this.props.id} {this.getSortSymbol()}</span>
+  headerContent () {
+    switch (typeof(this.props.header)) {
+    case 'function':
+      return this.props.header(this.getSortSymbol(), this.onHeaderClick)
+    default:
+      return <span>{this.props.header || this.props.id} {this.getSortSymbol()}</span>
     }
   }
 
-  isCurrentSortColumn() {
+  isCurrentSortColumn () {
     return this.props.orderColumn === this.props.id
   }
 
-  getSortSymbol(column) {
+  getSortSymbol (column) {
     return this.isCurrentSortColumn(column) ?
       (this.props.orderDir === 'asc' ? <span>↑</span> : <span>↓</span>) :
       null
   }
 
-  onHeaderClick() {
+  onHeaderClick () {
     this.props.setOrderColumn(this.props.id)
     this.props.setOrderDir(this.props.orderDir === 'asc' || !this.props.orderDir ? 'desc' : 'asc')
   }
 
-  renderFirstRowHeader() {
+  getClickableClass () {
+    return this.props.sortOnHeaderClick === false ? null : (this.props.clickableClass || defaultClickableClass)
+  }
+
+  renderFirstRowHeader () {
     const colSpan = this.props.children ? this.props.children.length : 1
 
     return (
@@ -38,32 +73,38 @@ class Header extends Component {
         colSpan={colSpan || 1}
         rowSpan={this.props.hasGroups && colSpan == 1 ? 2 : 1}
         onClick={() => this.props.sortOnHeaderClick === false ? null : this.onHeaderClick()}
-        className={this.props.className}
+        className={`${this.props.className} ${this.getClickableClass()}`}
       >
         {this.headerContent()}
       </th>
     )
   }
 
-  renderSecondRowHeader() {
+  renderSecondRowHeader () {
     return (
       <th
         key={this.props.id}
         onClick={() => this.props.sortOnHeaderClick === false ? null : this.onHeaderClick()}
-        className={this.props.className}
+        className={`${this.props.className} ${this.getClickableClass()}`}
       >
         {this.headerContent()}
       </th>
     )
   }
 
-  render() {
+  render () {
     return this.props.isFirstRow ? this.renderFirstRowHeader() : this.renderSecondRowHeader()
   }
 }
 
 class Thead extends Component {
-  hasGroups() {
+  static propTypes = {
+    children: ColumnOrColumnGroup,
+    onExpand: PropTypes.func.isRequired,
+    expandClassName: PropTypes.string
+  }
+
+  hasGroups () {
     let hasGroups = false
     React.Children.forEach(this.props.children, column => {
       if (column.type === ColumnGroup) hasGroups = true
@@ -72,15 +113,17 @@ class Thead extends Component {
     return hasGroups
   }
 
-  renderFirstRow() {
+  renderFirstRow () {
+    const hasGroups = this.hasGroups()
     return (
       <tr>
+        {this.props.onExpand ? <th rowSpan={hasGroups ? 2 : 1} className={this.props.expandClassName}/> : null}
         {React.Children.map(this.props.children, column => (
           <Header
             key={column.props.id}
             {...this.props}
             {...column.props}
-            hasGroups={this.hasGroups()}
+            hasGroups={hasGroups}
             className={column.props.headerClassName}
             isFirstRow={true}
           >
@@ -91,7 +134,7 @@ class Thead extends Component {
     )
   }
 
-  renderSecondRow() {
+  renderSecondRow () {
     return (
       <tr>
         {React.Children.map(this.props.children, column => {
@@ -111,7 +154,7 @@ class Thead extends Component {
     )
   }
 
-  render() {
+  render () {
     return (
       <thead>
         {this.renderFirstRow()}
@@ -136,67 +179,131 @@ function flattenColumns (columns) {
 }
 
 class Tbody extends Component {
-  render() {
-    const {children, rowId, id} = this.props
+  static propTypes = {
+    rowId: StringOrFunc.isRequired,
+    expandClassName: PropTypes.string,
+    clickableClass: PropTypes.string,
+    children: ColumnOrColumnGroup.isRequired,
+    id: PropTypes.string.isRequired,
+    onExpand: PropTypes.func.isRequired,
+    data: PropTypes.array.isRequired
+  }
+
+  constructor (props) {
+    super(props)
+    this.state = {expanded: {}}
+  }
+
+  cellClassName (column, row) {
+    if (typeof(column.props.cellClassName) === 'function') {
+      return column.props.cellClassName(row)
+    }
+
+    return column.props.cellClassName
+  }
+
+  expandCell (row) {
+    const {rowId, expandClassName, clickableClass} = this.props
+    const id = getRowId(rowId, row)
+    const onClick = () => {
+      const expanded = this.state.expanded
+      expanded[id] = !expanded[id]
+
+      this.setState({expanded})
+    }
+
+    return (
+      <td className={`${expandClassName} ${clickableClass || defaultClickableClass}`} onClick={onClick}>
+        {this.state.expanded[id] ? '-' : '+'}
+      </td>
+    )
+  }
+
+  render () {
+    const {children, rowId, onExpand} = this.props
+    const tableId = this.props.id
     const columns = flattenColumns(children)
     const data = this.props.data || []
+    let rows = []
+
+    data.forEach(row => {
+      const id = getRowId(rowId, row)
+      const rId = `${tableId}-${id}`
+      rows.push(
+        <tr key={`tr-${rId}`} id={`tr-${rId}`}>
+          {onExpand ? this.expandCell(row) : null}
+          {columns.map(column => (
+            <td key={`td-${rId}-${column.props.id}`} className={this.cellClassName(column, row)}>
+              {tdContent(column, row)}
+            </td>
+          ))}
+        </tr>
+      )
+      if (this.state.expanded[id]) {
+        rows.push(
+          <tr key={`tr-${rId}-expanded`}>
+            <td colSpan={columns.length + 1}>
+              {React.createElement(onExpand, {row})}
+            </td>
+          </tr>
+        )
+      }
+    })
 
     return (
       <tbody>
-        {data.map(row => {
-          const rId = `${id}-${getRowId(rowId, row)}`
-          return (
-            <tr key={`tr-${rId}`}>
-              {columns.map(column => (
-                <td key={`td-${rId}-${column.props.id}`}>
-                  {tdContent(column, row)}
-                </td>
-              ))}
-            </tr>
-          )
-        })}
+        {rows}
       </tbody>
     )
   }
 }
 
-function getRowId(rowId, row) {
-  switch(typeof(rowId)) {
-    case 'function':
-      return rowId(row)
-    default:
-      return row[rowId]
+function getRowId (rowId, row) {
+  switch (typeof(rowId)) {
+  case 'function':
+    return rowId(row)
+  default:
+    return row[rowId]
   }
 }
 
 
-function tdContent(column, row) {
-  switch(typeof(column.props.td)) {
-    case 'function':
-      return column.props.td(row)
-    default:
-      return row[column.props.td || column.props.id]
+function tdContent (column, row) {
+  switch (typeof(column.props.cell)) {
+  case 'function':
+    return column.props.cell(row)
+  default:
+    return row[column.props.cell || column.props.id]
   }
 }
 
-function tdOrderValue(column, row) {
-  switch(typeof(column.props.orderValue)) {
-    case 'function':
-      return column.props.orderValue(row)
-    default:
-      return row[column.props.orderValue || column.props.id]
+function tdOrderValue (column, row) {
+  switch (typeof(column.props.orderValue)) {
+  case 'function':
+    return column.props.orderValue(row)
+  default:
+    return row[column.props.orderValue || column.props.id]
   }
 }
 
 export class Table extends Component {
-  constructor(props) {
+  static propTypes = {
+    defaultOrderColumn: PropTypes.string,
+    defaultOrderDir: PropTypes.string,
+    data: PropTypes.array.isRequired,
+    children: ColumnOrColumnGroup.isRequired,
+    id: PropTypes.string.isRequired,
+    className: PropTypes.string,
+    style: PropTypes.object
+  }
+  constructor (props) {
     super(props)
     this.setOrderColumn = this.setOrderColumn.bind(this)
     this.setOrderDir = this.setOrderDir.bind(this)
     this.state = {}
   }
 
-  componentDidMount() {
+  componentDidMount () {
     if (this.props.defaultOrderColumn) {
       this.setOrderColumn(this.props.defaultOrderColumn)
     }
@@ -204,15 +311,15 @@ export class Table extends Component {
     this.setOrderDir(this.props.defaultOrderDir)
   }
 
-  setOrderColumn(column) {
+  setOrderColumn (column) {
     this.setState({orderColumn: column})
   }
 
-  setOrderDir(dir = 'desc') {
+  setOrderDir (dir = 'desc') {
     this.setState({orderDir: dir})
   }
 
-  getData() {
+  getData () {
     const {orderColumn, orderDir} = this.state
     let {data} = this.props
     const column = flattenColumns(this.props.children)
@@ -238,7 +345,7 @@ export class Table extends Component {
     }).map(obj => obj.row)
   }
 
-  render() {
+  render () {
     this.props.children
 
     const tableProps = {
@@ -256,20 +363,23 @@ export class Table extends Component {
           setOrderColumn={this.setOrderColumn}
           setOrderDir={this.setOrderDir}
         />
-        <Tbody {...this.props} data={this.getData()}/>
+        <Tbody
+          {...this.props}
+          data={this.getData()}
+        />
       </table>
     )
   }
 }
 
 export class Column extends Component {
-  render() {
+  render () {
     return null
   }
 }
 
 export class ColumnGroup extends Component {
-  render() {
+  render () {
     return null
   }
 }

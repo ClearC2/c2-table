@@ -5,8 +5,7 @@ import {Table, Column, ColumnGroup} from '../../src/components/Table'
 
 class FooBar extends Component {
   render() {
-    Foo()
-    return <div>Hello world</div>
+    return <div>{this.props.row.bar}</div>
   }
 }
 
@@ -23,18 +22,20 @@ const table = (
         <Table
           id="some-table"
           className="table table-bordered"
-          style={{marginTop: '100px'}}
+          style={{marginTop: '100px'}} 
           data={data}
           rowId={row => row.foo}
           style={{marginTop: '100px'}}
           defaultOrderColumn="bar"
-          defaultOrderDir="asc"
+          defaultOrderDir="desc"
+          onExpand={FooBar}
+          expandClassName="fit text-center"
         >
-          <Column id="foo" td={row => `${row['bar']}~${row['foo']}`}/>
-          <Column id="bar" td="bar" headerClassName="foobar-class" sortOnHeaderClick={false}/>
-          <ColumnGroup id="baz">
-            <Column id="bam" sortOnHeaderClick={false} header={(icon, onClick) => <span onClick={onClick}>{icon} BLAH</span>} />
-            <Column id="bama"/>
+          <Column id="foo" headerClassName="col-xs-2" cellClassName={row => row.bam}/>
+          <Column id="bar" headerClassName="col-xs-2"/>
+          <ColumnGroup id="baz" headerClassName="col-xs-2 text-center">
+            <Column id="bam" headerClassName="col-xs-1"/>
+            <Column id="bama" headerClassName="col-xs-1"/>
           </ColumnGroup>
         </Table>
       </div>
