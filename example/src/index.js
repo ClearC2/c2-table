@@ -22,7 +22,7 @@ const table = (
         <Table
           id="some-table"
           className="table table-bordered"
-          style={{marginTop: '100px'}} 
+          style={{marginTop: '100px'}}
           data={data}
           rowId={row => row.foo}
           style={{marginTop: '100px'}}

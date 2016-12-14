@@ -30,7 +30,9 @@ class Header extends Component {
     header: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.func
-    ])
+    ]),
+    sortDescIcon: PropTypes.any,
+    sortAscIcon: PropTypes.any
   }
   constructor (props) {
     super(props)
@@ -51,8 +53,10 @@ class Header extends Component {
   }
 
   getSortSymbol (column) {
+    const {sortDescIcon, sortAscIcon} = this.props
+
     return this.isCurrentSortColumn(column) ?
-      (this.props.orderDir === 'asc' ? <span>↑</span> : <span>↓</span>) :
+      (this.props.orderDir === 'asc' ? <span>{sortAscIcon || '↑'}</span> : <span>{sortDescIcon || '↓'}</span>) :
       null
   }
 
@@ -186,7 +190,9 @@ class Tbody extends Component {
     children: ColumnOrColumnGroup.isRequired,
     id: PropTypes.string.isRequired,
     onExpand: PropTypes.func.isRequired,
-    data: PropTypes.array.isRequired
+    data: PropTypes.array.isRequired,
+    expandedIcon: PropTypes.any,
+    collapsedIcon: PropTypes.any
   }
 
   constructor (props) {
@@ -203,7 +209,7 @@ class Tbody extends Component {
   }
 
   expandCell (row) {
-    const {rowId, expandClassName, clickableClass} = this.props
+    const {rowId, expandClassName, clickableClass, collapsedIcon, expandedIcon} = this.props
     const id = getRowId(rowId, row)
     const onClick = () => {
       const expanded = this.state.expanded
@@ -214,7 +220,7 @@ class Tbody extends Component {
 
     return (
       <td className={`${expandClassName} ${clickableClass || defaultClickableClass}`} onClick={onClick}>
-        {this.state.expanded[id] ? '-' : '+'}
+        {this.state.expanded[id] ? (expandedIcon || '-') : (collapsedIcon || '+')}
       </td>
     )
   }
@@ -373,13 +379,32 @@ export class Table extends Component {
 }
 
 export class Column extends Component {
+  static propTypes = {
+    id: PropTypes.string.isRequired,
+    headerClassName: PropTypes.string,
+    cellClassName: StringOrFunc,
+    cell: StringOrFunc,
+    orderValue: StringOrFunc
+  }
+
   render () {
-    return null
+    throw new Error('<Column> is not meant to be rendered.')
   }
 }
 
 export class ColumnGroup extends Component {
+  static propTypes = {
+    id: PropTypes.string.isRequired,
+    headerClassName: PropTypes.string,
+    children: PropTypes.arrayOf((propValue, key) => {
+      const type = propValue[key].type
+      if (type !== Column) {
+        throw new Error('<ColumnGroup> can only have <Column>\'s as children. ')
+      }
+    })
+  }
+
   render () {
-    return null
+    throw new Error('<ColumnGroup> is not meant to be rendered.')
   }
 }
