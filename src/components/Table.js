@@ -104,7 +104,7 @@ class Header extends Component {
 class Thead extends Component {
   static propTypes = {
     children: ColumnOrColumnGroup,
-    onExpand: PropTypes.func.isRequired,
+    onExpand: PropTypes.func,
     expandClassName: PropTypes.string
   }
 
@@ -189,7 +189,7 @@ class Tbody extends Component {
     clickableClass: PropTypes.string,
     children: ColumnOrColumnGroup.isRequired,
     id: PropTypes.string.isRequired,
-    onExpand: PropTypes.func.isRequired,
+    onExpand: PropTypes.func,
     data: PropTypes.array.isRequired,
     expandedIcon: PropTypes.any,
     collapsedIcon: PropTypes.any

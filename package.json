@@ -6,7 +6,7 @@
     "type": "git",
     "url": "https://github.com/ClearC2/c2-table"
   },
-  "main": "lib/Table.js",
+  "main": "lib/index.js",
   "scripts": {
     "start": "cd example && webpack-dev-server --inline --content-base dist --history-api-fallback --port 8081",
     "compile": "babel -d lib/ src/",
