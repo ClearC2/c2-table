@@ -1,10 +1,11 @@
-import React, {Component} from 'react'
-import { render } from 'react-dom'
-import {Foo} from '../../src/Table'
+import React, {Component, PropTypes} from 'react'
+import {render} from 'react-dom'
 import {Table, Column, ColumnGroup} from '../../src/components/Table'
 
 class FooBar extends Component {
-  render() {
+  static propTypes = {row: PropTypes.obj}
+
+  render () {
     return <div>{this.props.row.bar}</div>
   }
 }
@@ -25,7 +26,6 @@ const table = (
           style={{marginTop: '100px'}}
           data={data}
           rowId={row => row.foo}
-          style={{marginTop: '100px'}}
           defaultOrderColumn="bar"
           defaultOrderDir="desc"
           onExpand={FooBar}
@@ -46,4 +46,4 @@ const table = (
 render(
   table,
   document.getElementById('app')
-);
+)

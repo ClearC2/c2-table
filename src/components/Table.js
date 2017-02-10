@@ -325,6 +325,10 @@ export class Table extends Component {
     this.setState({orderDir: dir})
   }
 
+  getColumns () {
+    return flattenColumns(this.props.children)
+  }
+
   getData () {
     const {orderColumn, orderDir} = this.state
     let {data} = this.props
