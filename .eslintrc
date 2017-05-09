@@ -12,6 +12,7 @@
   "extends": ["eslint:recommended", "plugin:react/recommended"],
   "rules":{
     "no-console":1,
+    "react/require-render-return": 0,
     "semi": ["error", "never"],
     "curly": ["error", "multi-line"],
     "no-extra-bind": "error",

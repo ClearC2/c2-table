@@ -2,9 +2,20 @@ import React, {Component, PropTypes} from 'react'
 
 const defaultClickableClass = 'clickable'
 
+function isColumnGroup (child) {
+  return child.type._col_type && child.type._col_type === ColumnGroup._col_type
+}
+
+function isColumn (child) {
+  return child.type._col_type && child.type._col_type === Column._col_type
+}
+
+function isValidTableChild (child) {
+  return isColumnGroup(child) || isColumn(child)
+}
+
 const ColumnOrColumnGroup = PropTypes.arrayOf((propValue, key) => {
-  const type = propValue[key].type
-  if (type !== Column && type !== ColumnGroup) {
+  if (!isValidTableChild(propValue[key])) {
     throw new Error('<Table> can only have <Column> and <ColumnGroup> as children. ')
   }
 })
@@ -111,7 +122,7 @@ class Thead extends Component {
   hasGroups () {
     let hasGroups = false
     React.Children.forEach(this.props.children, column => {
-      if (column.type === ColumnGroup) hasGroups = true
+      if (isColumnGroup(column)) hasGroups = true
     })
 
     return hasGroups
@@ -142,7 +153,7 @@ class Thead extends Component {
     return (
       <tr>
         {React.Children.map(this.props.children, column => {
-          if (column.type !== ColumnGroup) return null
+          if (!isColumnGroup(column)) return null
           return React.Children.map(column.props.children, child => (
             <Header
               key={child.props.id}
@@ -172,7 +183,7 @@ function flattenColumns (columns) {
   let childs = []
 
   React.Children.forEach(columns, child => {
-    if (child.type === ColumnGroup) {
+    if (isColumnGroup(child)) {
       childs = childs.concat(flattenColumns(child.props.children))
     } else {
       childs.push(child)
@@ -383,6 +394,7 @@ export class Table extends Component {
 }
 
 export class Column extends Component {
+  static _col_type = 'c2-table-column'
   static propTypes = {
     id: PropTypes.string.isRequired,
     headerClassName: PropTypes.string,
@@ -397,12 +409,12 @@ export class Column extends Component {
 }
 
 export class ColumnGroup extends Component {
+  static _col_type = 'c2-table-column-group'
   static propTypes = {
     id: PropTypes.string.isRequired,
     headerClassName: PropTypes.string,
     children: PropTypes.arrayOf((propValue, key) => {
-      const type = propValue[key].type
-      if (type !== Column) {
+      if (!isColumn(propValue[key])) {
         throw new Error('<ColumnGroup> can only have <Column>\'s as children. ')
       }
     })
