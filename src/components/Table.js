@@ -3,11 +3,11 @@ import React, {Component, PropTypes} from 'react'
 const defaultClickableClass = 'clickable'
 
 function isColumnGroup (child) {
-  return child.type._col_type && child.type._col_type === ColumnGroup._col_type
+  return child.type && child.type._col_type && child.type._col_type === ColumnGroup._col_type
 }
 
 function isColumn (child) {
-  return child.type._col_type && child.type._col_type === Column._col_type
+  return child.type && child.type._col_type && child.type._col_type === Column._col_type
 }
 
 function isValidTableChild (child) {
