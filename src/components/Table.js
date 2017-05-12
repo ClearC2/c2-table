@@ -1,4 +1,5 @@
-import React, {Component, PropTypes} from 'react'
+import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 
 const defaultClickableClass = 'clickable'
 
@@ -203,12 +204,20 @@ class Tbody extends Component {
     onExpand: PropTypes.func,
     data: PropTypes.array.isRequired,
     expandedIcon: PropTypes.any,
-    collapsedIcon: PropTypes.any
+    collapsedIcon: PropTypes.any,
+    expanded: PropTypes.array,
+    onEmpty: PropTypes.node
   }
 
   constructor (props) {
     super(props)
-    this.state = {expanded: {}}
+    const expanded = {}
+    if (props.expanded) {
+      props.expanded.forEach(rowId => {
+        expanded[rowId] = true
+      })
+    }
+    this.state = {expanded}
   }
 
   cellClassName (column, row) {
@@ -237,7 +246,7 @@ class Tbody extends Component {
   }
 
   render () {
-    const {children, rowId, onExpand} = this.props
+    const {children, rowId, onExpand, onEmpty} = this.props
     const tableId = this.props.id
     const columns = flattenColumns(children)
     const data = this.props.data || []
@@ -256,7 +265,7 @@ class Tbody extends Component {
           ))}
         </tr>
       )
-      if (this.state.expanded[id]) {
+      if (onExpand && this.state.expanded[id]) {
         rows.push(
           <tr key={`tr-${rId}-expanded`}>
             <td colSpan={columns.length + 1}>
@@ -266,6 +275,16 @@ class Tbody extends Component {
         )
       }
     })
+
+    if (rows.length === 0) {
+      rows.push((
+        <tr key={`tr-empty`}>
+          <td colSpan={columns.length + (onExpand ? 1 : 0)}>
+            {onEmpty ? onEmpty : <div className="text-center">No data...</div>}
+          </td>
+        </tr>
+      ))
+    }
 
     return (
       <tbody>
@@ -374,7 +393,7 @@ export class Table extends Component {
       id: this.props.id,
       style: this.props.style
     }
-
+    const data = this.getData()
     return (
       <table {...tableProps}>
         <Thead
@@ -386,9 +405,41 @@ export class Table extends Component {
         />
         <Tbody
           {...this.props}
-          data={this.getData()}
+          data={data}
         />
+        <Tfoot {...this.props} data={data}/>
       </table>
+    )
+  }
+}
+
+class Tfoot extends Component {
+  static propTypes = {
+    children: PropTypes.node,
+    onExpand: PropTypes.func,
+    data: PropTypes.array
+  }
+
+  render () {
+    if (!this.props.children) return null
+    const columns = flattenColumns(this.props.children)
+    const footerValues = columns.reduce((last, column) => {
+      return last || column.props.footer
+    }, false)
+
+    if (!footerValues) return null
+
+    return (
+      <tfoot>
+        <tr>
+          {this.props.onExpand ? <td/> : null}
+          {flattenColumns(this.props.children).map(column => (
+            <td key={column.props.id} className={column.props.footerClassName || ''}>
+              {column.props.footer ? column.props.footer(this.props.data) : null}
+            </td>
+          ))}
+        </tr>
+      </tfoot>
     )
   }
 }
@@ -399,6 +450,12 @@ export class Column extends Component {
     id: PropTypes.string.isRequired,
     headerClassName: PropTypes.string,
     cellClassName: StringOrFunc,
+    footerClassName: PropTypes.string,
+    header: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.func
+    ]),
+    footer: PropTypes.func,
     cell: StringOrFunc,
     orderValue: StringOrFunc
   }
