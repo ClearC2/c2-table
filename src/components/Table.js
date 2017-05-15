@@ -414,6 +414,9 @@ export class Table extends Component {
 }
 
 class Tfoot extends Component {
+  static defaultProps = {
+    data: []
+  }
   static propTypes = {
     children: PropTypes.node,
     onExpand: PropTypes.func,
@@ -427,7 +430,7 @@ class Tfoot extends Component {
       return last || column.props.footer
     }, false)
 
-    if (!footerValues) return null
+    if (!footerValues || !(this.props.data.length)) return null
 
     return (
       <tfoot>
