@@ -372,8 +372,9 @@ export class Table extends Component {
     })
 
     return data.sort((a, b) => {
-      a = a.orderValue || 0
-      b = b.orderValue || 0
+      const defaultValue = typeof(a.orderValue) === 'string' ? '' : 0
+      a = a.orderValue || defaultValue
+      b = b.orderValue || defaultValue
       if (orderDir === 'asc') {
         if (a > b) return 1
         if (a < b) return -1
@@ -414,9 +415,7 @@ export class Table extends Component {
 }
 
 class Tfoot extends Component {
-  static defaultProps = {
-    data: []
-  }
+  static defaultProps = {data: []}
   static propTypes = {
     children: PropTypes.node,
     onExpand: PropTypes.func,
