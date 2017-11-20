@@ -252,7 +252,7 @@ class Tbody extends Component {
     const data = this.props.data || []
     let rows = []
 
-    data.forEach(row => {
+    data.forEach((row, index) => {
       const id = getRowId(rowId, row)
       const rId = `${tableId}-${id}`
       rows.push(
@@ -260,7 +260,7 @@ class Tbody extends Component {
           {onExpand ? this.expandCell(row) : null}
           {columns.map(column => (
             <td key={`td-${rId}-${column.props.id}`} className={this.cellClassName(column, row)}>
-              {tdContent(column, row)}
+              {tdContent(column, row, index)}
             </td>
           ))}
         </tr>
@@ -304,10 +304,10 @@ function getRowId (rowId, row) {
 }
 
 
-function tdContent (column, row) {
+function tdContent (column, row, index) {
   switch (typeof(column.props.cell)) {
   case 'function':
-    return column.props.cell(row)
+    return column.props.cell(row, index)
   default:
     return row[column.props.cell || column.props.id]
   }
@@ -450,8 +450,8 @@ export class Column extends Component {
   static _col_type = 'c2-table-column'
   static propTypes = {
     id: PropTypes.string.isRequired,
-    headerClassName: PropTypes.string,
-    cellClassName: StringOrFunc,
+    headerClassName: PropTypes.any,
+    cellClassName: PropTypes.any,
     footerClassName: PropTypes.string,
     header: PropTypes.oneOfType([
       PropTypes.string,
@@ -471,7 +471,7 @@ export class ColumnGroup extends Component {
   static _col_type = 'c2-table-column-group'
   static propTypes = {
     id: PropTypes.string.isRequired,
-    headerClassName: PropTypes.string,
+    headerClassName: PropTypes.any,
     children: PropTypes.arrayOf((propValue, key) => {
       if (!isColumn(propValue[key])) {
         throw new Error('<ColumnGroup> can only have <Column>\'s as children. ')
