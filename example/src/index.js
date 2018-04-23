@@ -35,6 +35,7 @@ const table = (
           onEmpty={(
             <div className="text-center">Nothing to see here...</div>
           )}
+          rowClassName={row => row.bar > 200 ? 'high' : 'low'}
         >
           <Column id="foo" headerClassName="col-xs-2" cellClassName={row => row.bam} footerClassName="foo-footer"/>
           <Column id="bar" headerClassName="col-xs-2"/>

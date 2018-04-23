@@ -206,7 +206,8 @@ class Tbody extends Component {
     expandedIcon: PropTypes.any,
     collapsedIcon: PropTypes.any,
     expanded: PropTypes.array,
-    onEmpty: PropTypes.node
+    onEmpty: PropTypes.node,
+    rowClassName: StringOrFunc
   }
 
   constructor (props) {
@@ -244,6 +245,12 @@ class Tbody extends Component {
       </td>
     )
   }
+  getRowClassName = row => {
+    const {rowClassName} = this.props
+    if (typeof (rowClassName) === 'string') return rowClassName
+    if (typeof (rowClassName) === 'function') return rowClassName(row)
+    return ''
+  }
 
   render () {
     const {children, rowId, onExpand, onEmpty} = this.props
@@ -253,10 +260,11 @@ class Tbody extends Component {
     let rows = []
 
     data.forEach((row, index) => {
+      const rowClassName = this.getRowClassName(row)
       const id = getRowId(rowId, row)
       const rId = `${tableId}-${id}`
       rows.push(
-        <tr key={`tr-${rId}`} id={`tr-${rId}`}>
+        <tr key={`tr-${rId}`} id={`tr-${rId}`} className={rowClassName}>
           {onExpand ? this.expandCell(row) : null}
           {columns.map(column => (
             <td key={`td-${rId}-${column.props.id}`} className={this.cellClassName(column, row)}>
@@ -267,7 +275,7 @@ class Tbody extends Component {
       )
       if (onExpand && this.state.expanded[id]) {
         rows.push(
-          <tr key={`tr-${rId}-expanded`}>
+          <tr key={`tr-${rId}-expanded`} className={`${rowClassName}-expanded`}>
             <td colSpan={columns.length + 1}>
               {React.createElement(onExpand, {row})}
             </td>
@@ -330,7 +338,8 @@ export class Table extends Component {
     children: ColumnOrColumnGroup.isRequired,
     id: PropTypes.string.isRequired,
     className: PropTypes.string,
-    style: PropTypes.object
+    style: PropTypes.object,
+    rowClassName: StringOrFunc
   }
   constructor (props) {
     super(props)
