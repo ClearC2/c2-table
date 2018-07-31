@@ -9,8 +9,18 @@
   "main": "lib/index.js",
   "scripts": {
     "start": "cd example && webpack-dev-server --inline --content-base dist --history-api-fallback --port 8081",
-    "compile": "babel -d lib/ src/",
-    "prepublish": "npm run compile"
+    "build": "babel -d lib/ src/",
+    "cm": "git-cz",
+    "semantic-release": "semantic-release"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "release": {
+    "branch": "master",
+    "extends": "c2-semantic-release"
   },
   "author": "David Adams",
   "license": "ISC",
@@ -22,6 +32,7 @@
     "babel-plugin-transform-class-properties": "^6.19.0",
     "babel-preset-es2015": "^6.18.0",
     "babel-preset-react": "^6.16.0",
+    "c2-semantic-release": "ClearC2/c2-semantic-release#^1.0.0",
     "eslint": "^3.12.1",
     "eslint-plugin-react": "^6.8.0",
     "react": "^15.0.0",
