@@ -26,6 +26,11 @@ const StringOrFunc = PropTypes.oneOfType([
   PropTypes.func
 ])
 
+const StringOrObject = PropTypes.oneOfType([
+  PropTypes.string,
+  PropTypes.object
+])
+
 class Header extends Component {
   static propTypes = {
     id: PropTypes.string.isRequired,
@@ -37,7 +42,7 @@ class Header extends Component {
     clickableClass: PropTypes.string,
     children: ColumnOrColumnGroup,
     hasGroups: PropTypes.bool,
-    className: PropTypes.string,
+    className: StringOrObject,
     isFirstRow: PropTypes.bool,
     header: PropTypes.oneOfType([
       PropTypes.string,
@@ -117,7 +122,7 @@ class Thead extends Component {
   static propTypes = {
     children: ColumnOrColumnGroup,
     onExpand: PropTypes.func,
-    expandClassName: PropTypes.string
+    expandClassName: StringOrObject
   }
 
   hasGroups () {
@@ -197,7 +202,7 @@ function flattenColumns (columns) {
 class Tbody extends Component {
   static propTypes = {
     rowId: StringOrFunc.isRequired,
-    expandClassName: PropTypes.string,
+    expandClassName: StringOrObject,
     clickableClass: PropTypes.string,
     children: ColumnOrColumnGroup.isRequired,
     id: PropTypes.string.isRequired,
@@ -337,7 +342,7 @@ export class Table extends Component {
     data: PropTypes.array.isRequired,
     children: ColumnOrColumnGroup.isRequired,
     id: PropTypes.string.isRequired,
-    className: PropTypes.string,
+    className: StringOrObject,
     style: PropTypes.object,
     rowClassName: StringOrFunc
   }
@@ -459,9 +464,9 @@ export class Column extends Component {
   static _col_type = 'c2-table-column'
   static propTypes = {
     id: PropTypes.string.isRequired,
-    headerClassName: PropTypes.any,
+    headerClassName: StringOrObject,
     cellClassName: PropTypes.any,
-    footerClassName: PropTypes.string,
+    footerClassName: StringOrObject,
     header: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.func
@@ -480,7 +485,7 @@ export class ColumnGroup extends Component {
   static _col_type = 'c2-table-column-group'
   static propTypes = {
     id: PropTypes.string.isRequired,
-    headerClassName: PropTypes.any,
+    headerClassName: StringOrObject,
     children: PropTypes.arrayOf((propValue, key) => {
       if (!isColumn(propValue[key])) {
         throw new Error('<ColumnGroup> can only have <Column>\'s as children. ')
