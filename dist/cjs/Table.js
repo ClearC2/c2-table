@@ -64,9 +64,13 @@ function (_Component) {
     _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(Header)).call.apply(_getPrototypeOf2, [this].concat(args)));
 
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onHeaderClick", function () {
+      var dir = _this.props.orderDir === 'asc' || !_this.props.orderDir ? 'desc' : 'asc';
+
       _this.props.setOrderColumn(_this.props.id);
 
-      _this.props.setOrderDir(_this.props.orderDir === 'asc' || !_this.props.orderDir ? 'desc' : 'asc');
+      _this.props.setOrderDir(dir);
+
+      _this.props.onSort(_this.props.id, dir);
     });
 
     return _this;
@@ -138,6 +142,10 @@ function (_Component) {
 
   return Header;
 }(_react.Component);
+
+_defineProperty(Header, "defaultProps", {
+  onSort: function onSort() {}
+});
 
 var Thead =
 /*#__PURE__*/
@@ -412,6 +420,15 @@ function (_Component4) {
       });
     });
 
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this9)), "getPagedData", function () {
+      var data = _this9.getData();
+
+      if (_this9.props.page === undefined || _this9.props.rowsPerPage === undefined) return data;
+      var begin = _this9.props.page * _this9.props.rowsPerPage;
+      var end = begin + _this9.props.rowsPerPage;
+      return data.slice(begin, end);
+    });
+
     return _this9;
   }
 
@@ -473,13 +490,14 @@ function (_Component4) {
         style: this.props.style
       };
       var data = this.getData();
+      var pagedData = this.getPagedData();
       return _react.default.createElement("table", tableProps, _react.default.createElement(Thead, _extends({}, this.props, {
         orderColumn: this.state.orderColumn,
         orderDir: this.state.orderDir,
         setOrderColumn: this.setOrderColumn,
         setOrderDir: this.setOrderDir
       })), _react.default.createElement(Tbody, _extends({}, this.props, {
-        data: data
+        data: pagedData
       })), _react.default.createElement(Tfoot, _extends({}, this.props, {
         data: data
       })));
