@@ -49,11 +49,11 @@ class Header extends Component {
       PropTypes.func
     ]),
     sortDescIcon: PropTypes.any,
-    sortAscIcon: PropTypes.any
+    sortAscIcon: PropTypes.any,
+    onSort: PropTypes.func
   }
-  constructor (props) {
-    super(props)
-    this.onHeaderClick = this.onHeaderClick.bind(this)
+  static defaultProps = {
+    onSort: () => {}
   }
 
   headerContent () {
@@ -77,9 +77,11 @@ class Header extends Component {
       null
   }
 
-  onHeaderClick () {
+  onHeaderClick = () => {
+    const dir = this.props.orderDir === 'asc' || !this.props.orderDir ? 'desc' : 'asc'
     this.props.setOrderColumn(this.props.id)
-    this.props.setOrderDir(this.props.orderDir === 'asc' || !this.props.orderDir ? 'desc' : 'asc')
+    this.props.setOrderDir(dir)
+    this.props.onSort(this.props.id, dir)
   }
 
   getClickableClass () {
@@ -92,7 +94,7 @@ class Header extends Component {
     return (
       <th
         colSpan={colSpan || 1}
-        rowSpan={this.props.hasGroups && colSpan == 1 ? 2 : 1}
+        rowSpan={this.props.hasGroups && colSpan === 1 ? 2 : 1}
         onClick={() => this.props.sortOnHeaderClick === false ? null : this.onHeaderClick()}
         className={`${this.props.className} ${this.getClickableClass()}`}
       >
@@ -344,7 +346,9 @@ export class Table extends Component {
     id: PropTypes.string.isRequired,
     className: StringOrObject,
     style: PropTypes.object,
-    rowClassName: StringOrFunc
+    rowClassName: StringOrFunc,
+    page: PropTypes.number,
+    rowsPerPage: PropTypes.number
   }
   constructor (props) {
     super(props)
@@ -400,15 +404,22 @@ export class Table extends Component {
     }).map(obj => obj.row)
   }
 
-  render () {
-    this.props.children
+  getPagedData = () => {
+    const data = this.getData()
+    if (this.props.page === undefined || this.props.rowsPerPage === undefined) return data
+    const begin = (this.props.page * this.props.rowsPerPage)
+    const end = begin + this.props.rowsPerPage
+    return data.slice(begin, end)
+  }
 
+  render () {
     const tableProps = {
       className: this.props.className,
       id: this.props.id,
       style: this.props.style
     }
     const data = this.getData()
+    const pagedData = this.getPagedData()
     return (
       <table {...tableProps}>
         <Thead
@@ -420,7 +431,7 @@ export class Table extends Component {
         />
         <Tbody
           {...this.props}
-          data={data}
+          data={pagedData}
         />
         <Tfoot {...this.props} data={data}/>
       </table>
