@@ -22,6 +22,8 @@ const table = (
     <div className="row">
       <div className="col-md-6 col-md-offset-3">
         <Table
+          page={2}
+          rowsPerPage={1}
           id="some-table"
           expanded={['b']}
           className="table table-bordered"
@@ -35,6 +37,7 @@ const table = (
           onEmpty={(
             <div className="text-center">Nothing to see here...</div>
           )}
+          onSort={(column, dir) => console.log(column, dir)}
           rowClassName={row => row.bar > 200 ? 'high' : 'low'}
         >
           <Column id="foo" headerClassName="col-xs-2" cellClassName={row => row.bam} footerClassName="foo-footer"/>
