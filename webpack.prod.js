@@ -8,7 +8,7 @@ module.exports = merge(common, {
   output: {
     path: path.join(__dirname, 'dist', 'umd'),
     filename: 'c2-table.js',
-    library: 'c2table',
+    library: 'C2Table',
     libraryTarget: 'umd'
   },
   externals: {
