@@ -1,4 +1,4 @@
-import {Table, Column, ColumnGroup} from './components/Table'
+import {Table, Column, ColumnGroup} from './Table'
 
 export {
   Table,

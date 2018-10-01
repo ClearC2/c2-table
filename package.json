@@ -6,12 +6,29 @@
     "type": "git",
     "url": "https://github.com/ClearC2/c2-table"
   },
-  "main": "lib/index.js",
+  "main": "dist/cjs/index.js",
+  "module": "dist/es/index.js",
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
   "scripts": {
-    "start": "cd example && webpack-dev-server --inline --content-base dist --history-api-fallback --port 8081",
-    "build": "babel -d lib/ src/",
+    "start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.dev.js --hot",
+    "build": "npm run build-es && npm run build-umd && npm run build-cjs",
+    "build-es": "cross-env NODE_ENV=production babel src/ -d dist/es/",
+    "build-umd": "cross-env NODE_ENV=production webpack --config webpack.prod.js",
+    "build-cjs": "cross-env NODE_ENV=production BABEL_ENV=cjs babel src/ -d dist/cjs/",
     "cm": "git-cz",
     "semantic-release": "semantic-release"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "src/**/*.js": "eslint",
+    "test/**/*.js": "eslint"
   },
   "config": {
     "commitizen": {
@@ -25,20 +42,24 @@
   "author": "David Adams",
   "license": "ISC",
   "devDependencies": {
-    "babel-cli": "^6.18.0",
-    "babel-core": "^6.18.2",
-    "babel-eslint": "^7.1.1",
-    "babel-loader": "^6.2.8",
-    "babel-plugin-transform-class-properties": "^6.19.0",
-    "babel-preset-es2015": "^6.18.0",
-    "babel-preset-react": "^6.16.0",
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.0",
+    "@babel/plugin-external-helpers": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "babel-loader": "^8.0.4",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.18",
     "c2-semantic-release": "ClearC2/c2-semantic-release#^1.0.0",
-    "eslint": "^3.12.1",
-    "eslint-plugin-react": "^6.8.0",
+    "cross-env": "^5.2.0",
+    "eslint-config-c2-react": "^1.4.3",
     "react": "^15.0.0",
     "react-dom": "^15.0.0",
-    "webpack": "github:webpack/webpack#v2.1.0-beta.27",
-    "webpack-dev-server": "github:webpack/webpack-dev-server#v2.1.0-beta.12"
+    "react-hot-loader": "^4.3.11",
+    "webpack": "^4.20.2",
+    "webpack-cli": "^3.1.1",
+    "webpack-dev-server": "^3.1.9",
+    "webpack-merge": "^4.1.4"
   },
   "peerDependencies": {
     "react": "^15.0.0",

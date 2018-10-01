@@ -4,11 +4,11 @@ import PropTypes from 'prop-types'
 const defaultClickableClass = 'clickable'
 
 function isColumnGroup (child) {
-  return child.type && child.type._col_type && child.type._col_type === ColumnGroup._col_type
+  return child.type && child.type._colType && child.type._colType === ColumnGroup._colType
 }
 
 function isColumn (child) {
-  return child.type && child.type._col_type && child.type._col_type === Column._col_type
+  return child.type && child.type._colType && child.type._colType === Column._colType
 }
 
 function isValidTableChild (child) {
@@ -51,17 +51,13 @@ class Header extends Component {
     sortDescIcon: PropTypes.any,
     sortAscIcon: PropTypes.any
   }
-  constructor (props) {
-    super(props)
-    this.onHeaderClick = this.onHeaderClick.bind(this)
-  }
 
   headerContent () {
-    switch (typeof(this.props.header)) {
-    case 'function':
-      return this.props.header(this.getSortSymbol(), this.onHeaderClick)
-    default:
-      return <span>{this.props.header || this.props.id} {this.getSortSymbol()}</span>
+    switch (typeof (this.props.header)) {
+      case 'function':
+        return this.props.header(this.getSortSymbol(), this.onHeaderClick)
+      default:
+        return <span>{this.props.header || this.props.id} {this.getSortSymbol()}</span>
     }
   }
 
@@ -72,12 +68,12 @@ class Header extends Component {
   getSortSymbol (column) {
     const {sortDescIcon, sortAscIcon} = this.props
 
-    return this.isCurrentSortColumn(column) ?
-      (this.props.orderDir === 'asc' ? <span>{sortAscIcon || '↑'}</span> : <span>{sortDescIcon || '↓'}</span>) :
-      null
+    return this.isCurrentSortColumn(column)
+      ? (this.props.orderDir === 'asc' ? <span>{sortAscIcon || '↑'}</span> : <span>{sortDescIcon || '↓'}</span>)
+      : null
   }
 
-  onHeaderClick () {
+  onHeaderClick = () => {
     this.props.setOrderColumn(this.props.id)
     this.props.setOrderDir(this.props.orderDir === 'asc' || !this.props.orderDir ? 'desc' : 'asc')
   }
@@ -92,7 +88,7 @@ class Header extends Component {
     return (
       <th
         colSpan={colSpan || 1}
-        rowSpan={this.props.hasGroups && colSpan == 1 ? 2 : 1}
+        rowSpan={this.props.hasGroups && colSpan === 1 ? 2 : 1}
         onClick={() => this.props.sortOnHeaderClick === false ? null : this.onHeaderClick()}
         className={`${this.props.className} ${this.getClickableClass()}`}
       >
@@ -138,7 +134,7 @@ class Thead extends Component {
     const hasGroups = this.hasGroups()
     return (
       <tr>
-        {this.props.onExpand ? <th rowSpan={hasGroups ? 2 : 1} className={this.props.expandClassName}/> : null}
+        {this.props.onExpand ? <th rowSpan={hasGroups ? 2 : 1} className={this.props.expandClassName} /> : null}
         {React.Children.map(this.props.children, column => (
           <Header
             key={column.props.id}
@@ -146,7 +142,7 @@ class Thead extends Component {
             {...column.props}
             hasGroups={hasGroups}
             className={column.props.headerClassName}
-            isFirstRow={true}
+            isFirstRow
           >
             {column.props.children}
           </Header>
@@ -227,7 +223,7 @@ class Tbody extends Component {
   }
 
   cellClassName (column, row) {
-    if (typeof(column.props.cellClassName) === 'function') {
+    if (typeof (column.props.cellClassName) === 'function') {
       return column.props.cellClassName(row)
     }
 
@@ -293,7 +289,7 @@ class Tbody extends Component {
       rows.push((
         <tr key={`tr-empty`}>
           <td colSpan={columns.length + (onExpand ? 1 : 0)}>
-            {onEmpty ? onEmpty : <div className="text-center">No data...</div>}
+            {onEmpty || <div className='text-center'>No data...</div>}
           </td>
         </tr>
       ))
@@ -308,30 +304,29 @@ class Tbody extends Component {
 }
 
 function getRowId (rowId, row) {
-  switch (typeof(rowId)) {
-  case 'function':
-    return rowId(row)
-  default:
-    return row[rowId]
+  switch (typeof (rowId)) {
+    case 'function':
+      return rowId(row)
+    default:
+      return row[rowId]
   }
 }
 
-
 function tdContent (column, row, index) {
-  switch (typeof(column.props.cell)) {
-  case 'function':
-    return column.props.cell(row, index)
-  default:
-    return row[column.props.cell || column.props.id]
+  switch (typeof (column.props.cell)) {
+    case 'function':
+      return column.props.cell(row, index)
+    default:
+      return row[column.props.cell || column.props.id]
   }
 }
 
 function tdOrderValue (column, row) {
-  switch (typeof(column.props.orderValue)) {
-  case 'function':
-    return column.props.orderValue(row)
-  default:
-    return row[column.props.orderValue || column.props.id]
+  switch (typeof (column.props.orderValue)) {
+    case 'function':
+      return column.props.orderValue(row)
+    default:
+      return row[column.props.orderValue || column.props.id]
   }
 }
 
@@ -346,12 +341,7 @@ export class Table extends Component {
     style: PropTypes.object,
     rowClassName: StringOrFunc
   }
-  constructor (props) {
-    super(props)
-    this.setOrderColumn = this.setOrderColumn.bind(this)
-    this.setOrderDir = this.setOrderDir.bind(this)
-    this.state = {}
-  }
+  state = {}
 
   componentDidMount () {
     if (this.props.defaultOrderColumn) {
@@ -361,11 +351,11 @@ export class Table extends Component {
     this.setOrderDir(this.props.defaultOrderDir)
   }
 
-  setOrderColumn (column) {
+  setOrderColumn = (column) => {
     this.setState({orderColumn: column})
   }
 
-  setOrderDir (dir = 'desc') {
+  setOrderDir = (dir = 'desc') => {
     this.setState({orderDir: dir})
   }
 
@@ -386,7 +376,7 @@ export class Table extends Component {
     })
 
     return data.sort((a, b) => {
-      const defaultValue = typeof(a.orderValue) === 'string' ? '' : 0
+      const defaultValue = typeof (a.orderValue) === 'string' ? '' : 0
       a = a.orderValue || defaultValue
       b = b.orderValue || defaultValue
       if (orderDir === 'asc') {
@@ -401,8 +391,6 @@ export class Table extends Component {
   }
 
   render () {
-    this.props.children
-
     const tableProps = {
       className: this.props.className,
       id: this.props.id,
@@ -422,7 +410,7 @@ export class Table extends Component {
           {...this.props}
           data={data}
         />
-        <Tfoot {...this.props} data={data}/>
+        <Tfoot {...this.props} data={data} />
       </table>
     )
   }
@@ -448,7 +436,7 @@ class Tfoot extends Component {
     return (
       <tfoot>
         <tr>
-          {this.props.onExpand ? <td/> : null}
+          {this.props.onExpand ? <td /> : null}
           {flattenColumns(this.props.children).map(column => (
             <td key={column.props.id} className={column.props.footerClassName || ''}>
               {column.props.footer ? column.props.footer(this.props.data) : null}
@@ -461,7 +449,7 @@ class Tfoot extends Component {
 }
 
 export class Column extends Component {
-  static _col_type = 'c2-table-column'
+  static _colType = 'c2-table-column'
   static propTypes = {
     id: PropTypes.string.isRequired,
     headerClassName: StringOrObject,
@@ -482,7 +470,7 @@ export class Column extends Component {
 }
 
 export class ColumnGroup extends Component {
-  static _col_type = 'c2-table-column-group'
+  static _colType = 'c2-table-column-group'
   static propTypes = {
     id: PropTypes.string.isRequired,
     headerClassName: StringOrObject,
