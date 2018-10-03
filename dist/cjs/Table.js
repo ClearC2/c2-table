@@ -642,15 +642,34 @@ function (_Component6) {
 exports.Table = Table;
 
 _defineProperty(Table, "propTypes", {
+  /** The default column to order by */
   defaultOrderColumn: _propTypes.default.string,
-  defaultOrderDir: _propTypes.default.string,
+
+  /** The default column direction */
+  defaultOrderDir: _propTypes.default.oneOf(['asc', 'desc']),
+
+  /** The array of table data */
   data: _propTypes.default.array.isRequired,
+
+  /** Columns/ColumnGroups */
   children: ColumnOrColumnGroup,
+
+  /** Unique table id */
   id: _propTypes.default.string.isRequired,
+
+  /** Can be string or object(glamor) */
   className: StringOrObject,
+
+  /** Style object */
   style: _propTypes.default.object,
+
+  /** String or func that passes row and should return string */
   rowClassName: StringOrFunc,
+
+  /** Page number */
   page: _propTypes.default.number,
+
+  /** Rows per page */
   rowsPerPage: _propTypes.default.number
 });
 

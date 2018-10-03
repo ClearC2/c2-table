@@ -1,0 +1,70 @@
+---
+name: Getting started
+route: /
+---
+
+import { Playground, PropsTable } from 'docz'
+import {Table, Column, ColumnGroup} from '../src'
+
+# c2-table
+
+## Install
+
+```sh
+yarn add ClearC2/c2-table#^1.0.0
+```
+
+## Basic usage
+
+<Playground>
+    {() => {
+        // import {Table, Column} from 'c2-table'
+        const data = [
+          {id: 1, firstName: 'Mickey', lastName: 'Patton', role: 'President'},
+          {id: 2, firstName: 'Kevin', lastName: 'Bull', role: 'Developer'}
+        ]
+        return (
+          <Table
+            data={data}
+            rowId='id'
+            id='test-table'
+           >
+            <Column id='id' header='ID' />
+            <Column
+            id='name'
+            header='Name'
+            orderValue={row => row.lastName + ', ' + row.firstName}
+            cell={(row) => (
+              <React.Fragment>
+                {row.firstName} {row.lastName}
+              </React.Fragment>
+            )}
+            />
+            <Column id='role' header='Role' />
+          </Table>
+        )
+    }}
+</Playground>
+
+## Expandable rows
+
+<Playground>
+    {() => {
+        // import {Table, Column} from 'c2-table'
+        const data = [
+          {id: 1, name: 'Mickey Patton', role: 'President'},
+          {id: 2, name: 'Kevin Bull', role: 'Developer'}
+        ]
+        return (
+          <Table
+            data={data}
+            rowId='id'
+            id='test-table'
+            onExpand={({row}) => <span>{row.role.toUpperCase()}</span>}
+           >
+            <Column id='id' header='ID' />
+            <Column id='name' header='Name' />
+          </Table>
+        )
+    }}
+</Playground>
