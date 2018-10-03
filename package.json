@@ -14,12 +14,13 @@
   "sideEffects": false,
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.dev.js --hot",
-    "build": "npm run build-es && npm run build-umd && npm run build-cjs",
+    "build": "rimraf dist && npm run build-es && npm run build-umd && npm run build-cjs",
     "build-es": "cross-env NODE_ENV=production babel src/ -d dist/es/",
     "build-umd": "cross-env NODE_ENV=production webpack --config webpack.prod.js",
     "build-cjs": "cross-env NODE_ENV=production BABEL_ENV=cjs babel src/ -d dist/cjs/",
     "cm": "git-cz",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "test": "jest"
   },
   "husky": {
     "hooks": {
@@ -43,29 +44,33 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/cli": "^7.1.2",
-    "@babel/core": "^7.1.0",
-    "@babel/plugin-external-helpers": "^7.0.0",
+    "@babel/core": "^7.1.2",
     "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/preset-env": "^7.1.0",
     "@babel/preset-react": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
     "babel-loader": "^8.0.4",
-    "babel-plugin-transform-react-remove-prop-types": "^0.4.18",
     "c2-semantic-release": "ClearC2/c2-semantic-release#^1.0.0",
     "cross-env": "^5.2.0",
     "eslint-config-c2-react": "^1.4.3",
-    "react": "^15.0.0",
-    "react-dom": "^15.0.0",
-    "react-hot-loader": "^4.3.11",
+    "jest": "^23.6.0",
+    "jest-dom": "^1.12.1",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "react-testing-library": "^5.1.0",
+    "rimraf": "^2.6.2",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.1",
     "webpack-dev-server": "^3.1.9",
     "webpack-merge": "^4.1.4"
   },
   "peerDependencies": {
-    "react": "^15.0.0",
-    "react-dom": "^15.0.0"
+    "react": "^15.0.0 || ^16.0.0",
+    "react-dom": "^15.0.0 || ^16.0.0"
   },
   "dependencies": {
-    "prop-types": "^15.5.10"
+    "prop-types": "^15.6.2",
+    "react-hot-loader": "^4.3.11"
   }
 }

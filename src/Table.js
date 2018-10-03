@@ -1,25 +1,8 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
+import {areComponentsEqual} from 'react-hot-loader'
 
 const defaultClickableClass = 'clickable'
-
-function isColumnGroup (child) {
-  return child.type && child.type._colType && child.type._colType === ColumnGroup._colType
-}
-
-function isColumn (child) {
-  return child.type && child.type._colType && child.type._colType === Column._colType
-}
-
-function isValidTableChild (child) {
-  return isColumnGroup(child) || isColumn(child)
-}
-
-const ColumnOrColumnGroup = PropTypes.arrayOf((propValue, key) => {
-  if (!isValidTableChild(propValue[key])) {
-    throw new Error('<Table> can only have <Column> and <ColumnGroup> as children. ')
-  }
-})
 
 const StringOrFunc = PropTypes.oneOfType([
   PropTypes.string,
@@ -30,6 +13,69 @@ const StringOrObject = PropTypes.oneOfType([
   PropTypes.string,
   PropTypes.object
 ])
+
+const StringObjectOrFunc = PropTypes.oneOfType([
+  PropTypes.string,
+  PropTypes.object,
+  PropTypes.func
+])
+
+export class Column extends Component {
+  static _colType = 'c2-table-column'
+  static propTypes = {
+    id: PropTypes.string.isRequired,
+    headerClassName: StringObjectOrFunc,
+    cellClassName: PropTypes.any,
+    footerClassName: StringOrObject,
+    header: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.func
+    ]),
+    footer: PropTypes.func,
+    cell: StringOrFunc,
+    orderValue: StringOrFunc
+  }
+
+  render () {
+    throw new Error('<Column> is not meant to be rendered.')
+  }
+}
+
+export class ColumnGroup extends Component {
+  static _colType = 'c2-table-column-group'
+  static propTypes = {
+    id: PropTypes.string.isRequired,
+    headerClassName: StringObjectOrFunc,
+    children: PropTypes.arrayOf((propValue, key) => {
+      if (!isColumn(propValue[key])) {
+        throw new Error('<ColumnGroup> can only have <Column>\'s as children. ')
+      }
+    })
+  }
+
+  render () {
+    throw new Error('<ColumnGroup> is not meant to be rendered.')
+  }
+}
+
+function isColumnGroup (child) {
+  return areComponentsEqual(child.type, ColumnGroup)
+}
+
+function isColumn (child) {
+  return areComponentsEqual(child.type, Column)
+}
+
+const ColumnOrColumnGroup = function (props, propName) {
+  let error
+  React.Children.forEach(props[propName], value => {
+    const validType = isColumnGroup(value) || isColumn(value)
+    if (!validType) {
+      error = new Error('Invalid Table children.')
+    }
+    return error
+  })
+}
 
 class Header extends Component {
   static propTypes = {
@@ -97,7 +143,7 @@ class Header extends Component {
         colSpan={colSpan || 1}
         rowSpan={this.props.hasGroups && colSpan === 1 ? 2 : 1}
         onClick={() => this.props.sortOnHeaderClick === false ? null : this.onHeaderClick()}
-        className={`${this.props.className} ${this.getClickableClass()}`}
+        className={`${this.props.className || ''} ${this.getClickableClass()}`.trim()}
       >
         {this.headerContent()}
       </th>
@@ -109,7 +155,7 @@ class Header extends Component {
       <th
         key={this.props.id}
         onClick={() => this.props.sortOnHeaderClick === false ? null : this.onHeaderClick()}
-        className={`${this.props.className} ${this.getClickableClass()}`}
+        className={`${this.props.className || ''} ${this.getClickableClass()}`.trim()}
       >
         {this.headerContent()}
       </th>
@@ -207,7 +253,7 @@ class Tbody extends Component {
     rowId: StringOrFunc.isRequired,
     expandClassName: StringOrObject,
     clickableClass: PropTypes.string,
-    children: ColumnOrColumnGroup.isRequired,
+    children: ColumnOrColumnGroup,
     id: PropTypes.string.isRequired,
     onExpand: PropTypes.func,
     data: PropTypes.array.isRequired,
@@ -248,7 +294,7 @@ class Tbody extends Component {
     }
 
     return (
-      <td className={`${expandClassName} ${clickableClass || defaultClickableClass}`} onClick={onClick}>
+      <td className={`${expandClassName || ''} ${clickableClass || defaultClickableClass}`.trim()} onClick={onClick}>
         {this.state.expanded[id] ? (expandedIcon || '-') : (collapsedIcon || '+')}
       </td>
     )
@@ -342,7 +388,7 @@ export class Table extends Component {
     defaultOrderColumn: PropTypes.string,
     defaultOrderDir: PropTypes.string,
     data: PropTypes.array.isRequired,
-    children: ColumnOrColumnGroup.isRequired,
+    children: ColumnOrColumnGroup,
     id: PropTypes.string.isRequired,
     className: StringOrObject,
     style: PropTypes.object,
@@ -463,43 +509,5 @@ class Tfoot extends Component {
         </tr>
       </tfoot>
     )
-  }
-}
-
-export class Column extends Component {
-  static _colType = 'c2-table-column'
-  static propTypes = {
-    id: PropTypes.string.isRequired,
-    headerClassName: StringOrObject,
-    cellClassName: PropTypes.any,
-    footerClassName: StringOrObject,
-    header: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.func
-    ]),
-    footer: PropTypes.func,
-    cell: StringOrFunc,
-    orderValue: StringOrFunc
-  }
-
-  render () {
-    throw new Error('<Column> is not meant to be rendered.')
-  }
-}
-
-export class ColumnGroup extends Component {
-  static _colType = 'c2-table-column-group'
-  static propTypes = {
-    id: PropTypes.string.isRequired,
-    headerClassName: StringOrObject,
-    children: PropTypes.arrayOf((propValue, key) => {
-      if (!isColumn(propValue[key])) {
-        throw new Error('<ColumnGroup> can only have <Column>\'s as children. ')
-      }
-    })
-  }
-
-  render () {
-    throw new Error('<ColumnGroup> is not meant to be rendered.')
   }
 }

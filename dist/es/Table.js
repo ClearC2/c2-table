@@ -10,35 +10,115 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { areComponentsEqual } from 'react-hot-loader';
 var defaultClickableClass = 'clickable';
+var StringOrFunc = PropTypes.oneOfType([PropTypes.string, PropTypes.func]);
+var StringOrObject = PropTypes.oneOfType([PropTypes.string, PropTypes.object]);
+var StringObjectOrFunc = PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.func]);
+export var Column =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Column, _Component);
+
+  function Column() {
+    _classCallCheck(this, Column);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Column).apply(this, arguments));
+  }
+
+  _createClass(Column, [{
+    key: "render",
+    value: function render() {
+      throw new Error('<Column> is not meant to be rendered.');
+    }
+  }]);
+
+  return Column;
+}(Component);
+
+_defineProperty(Column, "_colType", 'c2-table-column');
+
+_defineProperty(Column, "propTypes", {
+  id: PropTypes.string.isRequired,
+  headerClassName: StringObjectOrFunc,
+  cellClassName: PropTypes.any,
+  footerClassName: StringOrObject,
+  header: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  footer: PropTypes.func,
+  cell: StringOrFunc,
+  orderValue: StringOrFunc
+});
+
+export var ColumnGroup =
+/*#__PURE__*/
+function (_Component2) {
+  _inherits(ColumnGroup, _Component2);
+
+  function ColumnGroup() {
+    _classCallCheck(this, ColumnGroup);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(ColumnGroup).apply(this, arguments));
+  }
+
+  _createClass(ColumnGroup, [{
+    key: "render",
+    value: function render() {
+      throw new Error('<ColumnGroup> is not meant to be rendered.');
+    }
+  }]);
+
+  return ColumnGroup;
+}(Component);
+
+_defineProperty(ColumnGroup, "_colType", 'c2-table-column-group');
+
+_defineProperty(ColumnGroup, "propTypes", {
+  id: PropTypes.string.isRequired,
+  headerClassName: StringObjectOrFunc,
+  children: PropTypes.arrayOf(function (propValue, key) {
+    if (!isColumn(propValue[key])) {
+      throw new Error('<ColumnGroup> can only have <Column>\'s as children. ');
+    }
+  })
+});
 
 function isColumnGroup(child) {
-  return child.type && child.type._colType && child.type._colType === ColumnGroup._colType;
+  return areComponentsEqual(child.type, ColumnGroup);
 }
 
 function isColumn(child) {
-  return child.type && child.type._colType && child.type._colType === Column._colType;
+  return areComponentsEqual(child.type, Column);
 }
 
-function isValidTableChild(child) {
-  return isColumnGroup(child) || isColumn(child);
-}
+var ColumnOrColumnGroup = function ColumnOrColumnGroup(props, propName) {
+  var error;
+  React.Children.forEach(props[propName], function (value) {
+    var validType = isColumnGroup(value) || isColumn(value);
+
+    if (!validType) {
+      error = new Error('Invalid Table children.');
+    }
+
+    return error;
+  });
+};
 
 var Header =
 /*#__PURE__*/
-function (_Component) {
-  _inherits(Header, _Component);
+function (_Component3) {
+  _inherits(Header, _Component3);
 
   function Header() {
     var _getPrototypeOf2;
@@ -107,7 +187,7 @@ function (_Component) {
         onClick: function onClick() {
           return _this2.props.sortOnHeaderClick === false ? null : _this2.onHeaderClick();
         },
-        className: "".concat(this.props.className, " ").concat(this.getClickableClass())
+        className: "".concat(this.props.className || '', " ").concat(this.getClickableClass()).trim()
       }, this.headerContent());
     }
   }, {
@@ -120,7 +200,7 @@ function (_Component) {
         onClick: function onClick() {
           return _this3.props.sortOnHeaderClick === false ? null : _this3.onHeaderClick();
         },
-        className: "".concat(this.props.className, " ").concat(this.getClickableClass())
+        className: "".concat(this.props.className || '', " ").concat(this.getClickableClass()).trim()
       }, this.headerContent());
     }
   }, {
@@ -133,14 +213,32 @@ function (_Component) {
   return Header;
 }(Component);
 
+_defineProperty(Header, "propTypes", {
+  id: PropTypes.string.isRequired,
+  orderColumn: PropTypes.string,
+  orderDir: PropTypes.string,
+  setOrderColumn: PropTypes.func.isRequired,
+  setOrderDir: PropTypes.func.isRequired,
+  sortOnHeaderClick: PropTypes.bool,
+  clickableClass: PropTypes.string,
+  children: ColumnOrColumnGroup,
+  hasGroups: PropTypes.bool,
+  className: StringOrObject,
+  isFirstRow: PropTypes.bool,
+  header: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  sortDescIcon: PropTypes.any,
+  sortAscIcon: PropTypes.any,
+  onSort: PropTypes.func
+});
+
 _defineProperty(Header, "defaultProps", {
   onSort: function onSort() {}
 });
 
 var Thead =
 /*#__PURE__*/
-function (_Component2) {
-  _inherits(Thead, _Component2);
+function (_Component4) {
+  _inherits(Thead, _Component4);
 
   function Thead() {
     _classCallCheck(this, Thead);
@@ -202,6 +300,12 @@ function (_Component2) {
   return Thead;
 }(Component);
 
+_defineProperty(Thead, "propTypes", {
+  children: ColumnOrColumnGroup,
+  onExpand: PropTypes.func,
+  expandClassName: StringOrObject
+});
+
 function flattenColumns(columns) {
   var childs = [];
   React.Children.forEach(columns, function (child) {
@@ -216,8 +320,8 @@ function flattenColumns(columns) {
 
 var Tbody =
 /*#__PURE__*/
-function (_Component3) {
-  _inherits(Tbody, _Component3);
+function (_Component5) {
+  _inherits(Tbody, _Component5);
 
   function Tbody(props) {
     var _this6;
@@ -279,7 +383,7 @@ function (_Component3) {
       };
 
       return React.createElement("td", {
-        className: "".concat(expandClassName, " ").concat(clickableClass || defaultClickableClass),
+        className: "".concat(expandClassName || '', " ").concat(clickableClass || defaultClickableClass).trim(),
         onClick: onClick
       }, this.state.expanded[id] ? expandedIcon || '-' : collapsedIcon || '+');
     }
@@ -342,6 +446,21 @@ function (_Component3) {
   return Tbody;
 }(Component);
 
+_defineProperty(Tbody, "propTypes", {
+  rowId: StringOrFunc.isRequired,
+  expandClassName: StringOrObject,
+  clickableClass: PropTypes.string,
+  children: ColumnOrColumnGroup,
+  id: PropTypes.string.isRequired,
+  onExpand: PropTypes.func,
+  data: PropTypes.array.isRequired,
+  expandedIcon: PropTypes.any,
+  collapsedIcon: PropTypes.any,
+  expanded: PropTypes.array,
+  onEmpty: PropTypes.node,
+  rowClassName: StringOrFunc
+});
+
 function getRowId(rowId, row) {
   switch (_typeof(rowId)) {
     case 'function':
@@ -374,8 +493,8 @@ function tdOrderValue(column, row) {
 
 export var Table =
 /*#__PURE__*/
-function (_Component4) {
-  _inherits(Table, _Component4);
+function (_Component6) {
+  _inherits(Table, _Component6);
 
   function Table() {
     var _getPrototypeOf3;
@@ -493,10 +612,23 @@ function (_Component4) {
   return Table;
 }(Component);
 
+_defineProperty(Table, "propTypes", {
+  defaultOrderColumn: PropTypes.string,
+  defaultOrderDir: PropTypes.string,
+  data: PropTypes.array.isRequired,
+  children: ColumnOrColumnGroup,
+  id: PropTypes.string.isRequired,
+  className: StringOrObject,
+  style: PropTypes.object,
+  rowClassName: StringOrFunc,
+  page: PropTypes.number,
+  rowsPerPage: PropTypes.number
+});
+
 var Tfoot =
 /*#__PURE__*/
-function (_Component5) {
-  _inherits(Tfoot, _Component5);
+function (_Component7) {
+  _inherits(Tfoot, _Component7);
 
   function Tfoot() {
     _classCallCheck(this, Tfoot);
@@ -531,48 +663,8 @@ _defineProperty(Tfoot, "defaultProps", {
   data: []
 });
 
-export var Column =
-/*#__PURE__*/
-function (_Component6) {
-  _inherits(Column, _Component6);
-
-  function Column() {
-    _classCallCheck(this, Column);
-
-    return _possibleConstructorReturn(this, _getPrototypeOf(Column).apply(this, arguments));
-  }
-
-  _createClass(Column, [{
-    key: "render",
-    value: function render() {
-      throw new Error('<Column> is not meant to be rendered.');
-    }
-  }]);
-
-  return Column;
-}(Component);
-
-_defineProperty(Column, "_colType", 'c2-table-column');
-
-export var ColumnGroup =
-/*#__PURE__*/
-function (_Component7) {
-  _inherits(ColumnGroup, _Component7);
-
-  function ColumnGroup() {
-    _classCallCheck(this, ColumnGroup);
-
-    return _possibleConstructorReturn(this, _getPrototypeOf(ColumnGroup).apply(this, arguments));
-  }
-
-  _createClass(ColumnGroup, [{
-    key: "render",
-    value: function render() {
-      throw new Error('<ColumnGroup> is not meant to be rendered.');
-    }
-  }]);
-
-  return ColumnGroup;
-}(Component);
-
-_defineProperty(ColumnGroup, "_colType", 'c2-table-column-group');
+_defineProperty(Tfoot, "propTypes", {
+  children: PropTypes.node,
+  onExpand: PropTypes.func,
+  data: PropTypes.array
+});
