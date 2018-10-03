@@ -3,9 +3,15 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ColumnGroup = exports.Column = exports.Table = void 0;
+exports.Table = exports.ColumnGroup = exports.Column = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
+
+var _propTypes = _interopRequireDefault(require("prop-types"));
+
+var _reactHotLoader = require("react-hot-loader");
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
@@ -21,34 +27,121 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
 
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
-
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 var defaultClickableClass = 'clickable';
 
+var StringOrFunc = _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]);
+
+var StringOrObject = _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.object]);
+
+var StringObjectOrFunc = _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.object, _propTypes.default.func]);
+
+var Column =
+/*#__PURE__*/
+function (_Component) {
+  _inherits(Column, _Component);
+
+  function Column() {
+    _classCallCheck(this, Column);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(Column).apply(this, arguments));
+  }
+
+  _createClass(Column, [{
+    key: "render",
+    value: function render() {
+      throw new Error('<Column> is not meant to be rendered.');
+    }
+  }]);
+
+  return Column;
+}(_react.Component);
+
+exports.Column = Column;
+
+_defineProperty(Column, "_colType", 'c2-table-column');
+
+_defineProperty(Column, "propTypes", {
+  id: _propTypes.default.string.isRequired,
+  headerClassName: StringObjectOrFunc,
+  cellClassName: _propTypes.default.any,
+  footerClassName: StringOrObject,
+  header: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  footer: _propTypes.default.func,
+  cell: StringOrFunc,
+  orderValue: StringOrFunc
+});
+
+var ColumnGroup =
+/*#__PURE__*/
+function (_Component2) {
+  _inherits(ColumnGroup, _Component2);
+
+  function ColumnGroup() {
+    _classCallCheck(this, ColumnGroup);
+
+    return _possibleConstructorReturn(this, _getPrototypeOf(ColumnGroup).apply(this, arguments));
+  }
+
+  _createClass(ColumnGroup, [{
+    key: "render",
+    value: function render() {
+      throw new Error('<ColumnGroup> is not meant to be rendered.');
+    }
+  }]);
+
+  return ColumnGroup;
+}(_react.Component);
+
+exports.ColumnGroup = ColumnGroup;
+
+_defineProperty(ColumnGroup, "_colType", 'c2-table-column-group');
+
+_defineProperty(ColumnGroup, "propTypes", {
+  id: _propTypes.default.string.isRequired,
+  headerClassName: StringObjectOrFunc,
+  children: _propTypes.default.arrayOf(function (propValue, key) {
+    if (!isColumn(propValue[key])) {
+      throw new Error('<ColumnGroup> can only have <Column>\'s as children. ');
+    }
+  })
+});
+
 function isColumnGroup(child) {
-  return child.type && child.type._colType && child.type._colType === ColumnGroup._colType;
+  return (0, _reactHotLoader.areComponentsEqual)(child.type, ColumnGroup);
 }
 
 function isColumn(child) {
-  return child.type && child.type._colType && child.type._colType === Column._colType;
+  return (0, _reactHotLoader.areComponentsEqual)(child.type, Column);
 }
 
-function isValidTableChild(child) {
-  return isColumnGroup(child) || isColumn(child);
-}
+var ColumnOrColumnGroup = function ColumnOrColumnGroup(props, propName) {
+  var error;
+
+  _react.default.Children.forEach(props[propName], function (value) {
+    var validType = isColumnGroup(value) || isColumn(value);
+
+    if (!validType) {
+      error = new Error('Invalid Table children.');
+    }
+
+    return error;
+  });
+};
 
 var Header =
 /*#__PURE__*/
-function (_Component) {
-  _inherits(Header, _Component);
+function (_Component3) {
+  _inherits(Header, _Component3);
 
   function Header() {
     var _getPrototypeOf2;
@@ -117,7 +210,7 @@ function (_Component) {
         onClick: function onClick() {
           return _this2.props.sortOnHeaderClick === false ? null : _this2.onHeaderClick();
         },
-        className: "".concat(this.props.className, " ").concat(this.getClickableClass())
+        className: "".concat(this.props.className || '', " ").concat(this.getClickableClass()).trim()
       }, this.headerContent());
     }
   }, {
@@ -130,7 +223,7 @@ function (_Component) {
         onClick: function onClick() {
           return _this3.props.sortOnHeaderClick === false ? null : _this3.onHeaderClick();
         },
-        className: "".concat(this.props.className, " ").concat(this.getClickableClass())
+        className: "".concat(this.props.className || '', " ").concat(this.getClickableClass()).trim()
       }, this.headerContent());
     }
   }, {
@@ -143,14 +236,32 @@ function (_Component) {
   return Header;
 }(_react.Component);
 
+_defineProperty(Header, "propTypes", {
+  id: _propTypes.default.string.isRequired,
+  orderColumn: _propTypes.default.string,
+  orderDir: _propTypes.default.string,
+  setOrderColumn: _propTypes.default.func.isRequired,
+  setOrderDir: _propTypes.default.func.isRequired,
+  sortOnHeaderClick: _propTypes.default.bool,
+  clickableClass: _propTypes.default.string,
+  children: ColumnOrColumnGroup,
+  hasGroups: _propTypes.default.bool,
+  className: StringOrObject,
+  isFirstRow: _propTypes.default.bool,
+  header: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+  sortDescIcon: _propTypes.default.any,
+  sortAscIcon: _propTypes.default.any,
+  onSort: _propTypes.default.func
+});
+
 _defineProperty(Header, "defaultProps", {
   onSort: function onSort() {}
 });
 
 var Thead =
 /*#__PURE__*/
-function (_Component2) {
-  _inherits(Thead, _Component2);
+function (_Component4) {
+  _inherits(Thead, _Component4);
 
   function Thead() {
     _classCallCheck(this, Thead);
@@ -214,6 +325,12 @@ function (_Component2) {
   return Thead;
 }(_react.Component);
 
+_defineProperty(Thead, "propTypes", {
+  children: ColumnOrColumnGroup,
+  onExpand: _propTypes.default.func,
+  expandClassName: StringOrObject
+});
+
 function flattenColumns(columns) {
   var childs = [];
 
@@ -230,8 +347,8 @@ function flattenColumns(columns) {
 
 var Tbody =
 /*#__PURE__*/
-function (_Component3) {
-  _inherits(Tbody, _Component3);
+function (_Component5) {
+  _inherits(Tbody, _Component5);
 
   function Tbody(props) {
     var _this6;
@@ -293,7 +410,7 @@ function (_Component3) {
       };
 
       return _react.default.createElement("td", {
-        className: "".concat(expandClassName, " ").concat(clickableClass || defaultClickableClass),
+        className: "".concat(expandClassName || '', " ").concat(clickableClass || defaultClickableClass).trim(),
         onClick: onClick
       }, this.state.expanded[id] ? expandedIcon || '-' : collapsedIcon || '+');
     }
@@ -356,6 +473,21 @@ function (_Component3) {
   return Tbody;
 }(_react.Component);
 
+_defineProperty(Tbody, "propTypes", {
+  rowId: StringOrFunc.isRequired,
+  expandClassName: StringOrObject,
+  clickableClass: _propTypes.default.string,
+  children: ColumnOrColumnGroup,
+  id: _propTypes.default.string.isRequired,
+  onExpand: _propTypes.default.func,
+  data: _propTypes.default.array.isRequired,
+  expandedIcon: _propTypes.default.any,
+  collapsedIcon: _propTypes.default.any,
+  expanded: _propTypes.default.array,
+  onEmpty: _propTypes.default.node,
+  rowClassName: StringOrFunc
+});
+
 function getRowId(rowId, row) {
   switch (_typeof(rowId)) {
     case 'function':
@@ -388,8 +520,8 @@ function tdOrderValue(column, row) {
 
 var Table =
 /*#__PURE__*/
-function (_Component4) {
-  _inherits(Table, _Component4);
+function (_Component6) {
+  _inherits(Table, _Component6);
 
   function Table() {
     var _getPrototypeOf3;
@@ -509,10 +641,23 @@ function (_Component4) {
 
 exports.Table = Table;
 
+_defineProperty(Table, "propTypes", {
+  defaultOrderColumn: _propTypes.default.string,
+  defaultOrderDir: _propTypes.default.string,
+  data: _propTypes.default.array.isRequired,
+  children: ColumnOrColumnGroup,
+  id: _propTypes.default.string.isRequired,
+  className: StringOrObject,
+  style: _propTypes.default.object,
+  rowClassName: StringOrFunc,
+  page: _propTypes.default.number,
+  rowsPerPage: _propTypes.default.number
+});
+
 var Tfoot =
 /*#__PURE__*/
-function (_Component5) {
-  _inherits(Tfoot, _Component5);
+function (_Component7) {
+  _inherits(Tfoot, _Component7);
 
   function Tfoot() {
     _classCallCheck(this, Tfoot);
@@ -547,52 +692,8 @@ _defineProperty(Tfoot, "defaultProps", {
   data: []
 });
 
-var Column =
-/*#__PURE__*/
-function (_Component6) {
-  _inherits(Column, _Component6);
-
-  function Column() {
-    _classCallCheck(this, Column);
-
-    return _possibleConstructorReturn(this, _getPrototypeOf(Column).apply(this, arguments));
-  }
-
-  _createClass(Column, [{
-    key: "render",
-    value: function render() {
-      throw new Error('<Column> is not meant to be rendered.');
-    }
-  }]);
-
-  return Column;
-}(_react.Component);
-
-exports.Column = Column;
-
-_defineProperty(Column, "_colType", 'c2-table-column');
-
-var ColumnGroup =
-/*#__PURE__*/
-function (_Component7) {
-  _inherits(ColumnGroup, _Component7);
-
-  function ColumnGroup() {
-    _classCallCheck(this, ColumnGroup);
-
-    return _possibleConstructorReturn(this, _getPrototypeOf(ColumnGroup).apply(this, arguments));
-  }
-
-  _createClass(ColumnGroup, [{
-    key: "render",
-    value: function render() {
-      throw new Error('<ColumnGroup> is not meant to be rendered.');
-    }
-  }]);
-
-  return ColumnGroup;
-}(_react.Component);
-
-exports.ColumnGroup = ColumnGroup;
-
-_defineProperty(ColumnGroup, "_colType", 'c2-table-column-group');
+_defineProperty(Tfoot, "propTypes", {
+  children: _propTypes.default.node,
+  onExpand: _propTypes.default.func,
+  data: _propTypes.default.array
+});
