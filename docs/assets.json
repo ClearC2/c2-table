@@ -1,8 +1,8 @@
 {
-  "vendors.js": "/c2-table/static/js/vendors.ac2373bb.js",
-  "app.js": "/c2-table/static/js/app.69f841bd.js",
-  "docz-index.js": "/c2-table/static/js/docz-index.ce234d16.js",
-  "docz-props.js": "/c2-table/static/js/docz-props.06081f5f.js",
-  "runtime~app.js": "/c2-table/static/js/runtime~app.8b9276bf49acfd8c6498.js",
+  "vendors.js": "/c2-table/static/js/vendors.cd728dd9.js",
+  "app.js": "/c2-table/static/js/app.2275183b.js",
+  "docz-props.js": "/c2-table/static/js/docz-props.c4a5a6ec.js",
+  "docz-index.js": "/c2-table/static/js/docz-index.7a967d99.js",
+  "runtime~app.js": "/c2-table/static/js/runtime~app.625fa24bc8cee4188ead.js",
   "index.html": "/c2-table/index.html"
 }

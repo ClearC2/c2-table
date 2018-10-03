@@ -20,20 +20,33 @@ const StringObjectOrFunc = PropTypes.oneOfType([
   PropTypes.func
 ])
 
-export class Column extends Component {
+class Column extends Component {
   static _colType = 'c2-table-column'
   static propTypes = {
+    /** Unique column id */
     id: PropTypes.string.isRequired,
-    headerClassName: StringObjectOrFunc,
-    cellClassName: PropTypes.any,
-    footerClassName: StringOrObject,
+    /** Header label or func that accepts sort direction and sort function that should return jsx */
     header: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.func
     ]),
+    /** Class to apply to header th */
+    headerClassName: StringObjectOrFunc,
+    /** Class to apply to body td */
+    cellClassName: PropTypes.any,
+    /** Class to apply to footer td */
+    footerClassName: StringOrObject,
+    /** Func that accepts all rows and should return string/jsx */
     footer: PropTypes.func,
+    /** String or func that accepts row and should return string/jsx */
     cell: StringOrFunc,
-    orderValue: StringOrFunc
+    /** String id of column or func that accepts row and should return string */
+    orderValue: StringOrFunc,
+    /** Add sort click handler to column header */
+    sortOnHeaderClick: PropTypes.bool
+  }
+  static defaultProps = {
+    sortOnHeaderClick: true
   }
 
   render () {
@@ -41,16 +54,24 @@ export class Column extends Component {
   }
 }
 
-export class ColumnGroup extends Component {
+class ColumnGroup extends Component {
   static _colType = 'c2-table-column-group'
   static propTypes = {
+    /** Unique column id */
     id: PropTypes.string.isRequired,
-    headerClassName: StringObjectOrFunc,
+    /** Columns */
     children: PropTypes.arrayOf((propValue, key) => {
       if (!isColumn(propValue[key])) {
         throw new Error('<ColumnGroup> can only have <Column>\'s as children. ')
       }
-    })
+    }).isRequired,
+    /** Class to apply to header th */
+    headerClassName: StringObjectOrFunc,
+    /** Add sort click handler to column group header */
+    sortOnHeaderClick: PropTypes.bool
+  }
+  static defaultProps = {
+    sortOnHeaderClick: false
   }
 
   render () {
@@ -383,28 +404,32 @@ function tdOrderValue (column, row) {
   }
 }
 
-export class Table extends Component {
+class Table extends Component {
   static propTypes = {
+    /** Unique table id */
+    id: PropTypes.string.isRequired,
+    /** String or func that accepts row and should return a unique row id string */
+    rowId: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
+    /** The array of table data */
+    data: PropTypes.array.isRequired,
     /** The default column to order by */
     defaultOrderColumn: PropTypes.string,
     /** The default column direction */
     defaultOrderDir: PropTypes.oneOf(['asc', 'desc']),
-    /** The array of table data */
-    data: PropTypes.array.isRequired,
     /** Columns/ColumnGroups */
     children: ColumnOrColumnGroup,
-    /** Unique table id */
-    id: PropTypes.string.isRequired,
     /** Can be string or object(glamor) */
     className: StringOrObject,
     /** Style object */
     style: PropTypes.object,
-    /** String or func that passes row and should return string */
+    /** String or func that accepts row and should return string */
     rowClassName: StringOrFunc,
     /** Page number */
     page: PropTypes.number,
     /** Rows per page */
-    rowsPerPage: PropTypes.number
+    rowsPerPage: PropTypes.number,
+    /** Function that receives the row object and should return jsx */
+    onExpand: PropTypes.func
   }
   state = {}
 
@@ -520,4 +545,10 @@ class Tfoot extends Component {
       </tfoot>
     )
   }
+}
+
+export {
+  Table,
+  Column,
+  ColumnGroup
 }

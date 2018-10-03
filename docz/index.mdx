@@ -25,9 +25,9 @@ yarn add ClearC2/c2-table#^1.0.0
         ]
         return (
           <Table
-            data={data}
-            rowId='id'
             id='test-table'
+            rowId='id'
+            data={data}
            >
             <Column id='id' header='ID' />
             <Column
@@ -46,6 +46,35 @@ yarn add ClearC2/c2-table#^1.0.0
     }}
 </Playground>
 
+## Column Groups
+
+<Playground>
+    {() => {
+        // import {Table, Column} from 'c2-table'
+        const data = [
+          {id: 1, firstName: 'Mickey', lastName: 'Patton', role: 'President'},
+          {id: 2, firstName: 'Kevin', lastName: 'Bull', role: 'Developer'}
+        ]
+        return (
+          <Table
+            id='test-table'
+            rowId='id'
+            data={data}
+           >
+            <Column id='id' header='ID' />
+            <ColumnGroup
+              id='name'
+              header='Name'
+            >
+                <Column id='firstName' header='First' />
+                <Column id='lastName' header='Last' />
+            </ColumnGroup>
+            <Column id='role' header='Role' />
+          </Table>
+        )
+    }}
+</Playground>
+
 ## Expandable rows
 
 <Playground>
@@ -57,9 +86,9 @@ yarn add ClearC2/c2-table#^1.0.0
         ]
         return (
           <Table
-            data={data}
-            rowId='id'
             id='test-table'
+            rowId='id'
+            data={data}
             onExpand={({row}) => <span>{row.role.toUpperCase()}</span>}
            >
             <Column id='id' header='ID' />

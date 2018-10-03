@@ -27,7 +27,8 @@ var defaultClickableClass = 'clickable';
 var StringOrFunc = PropTypes.oneOfType([PropTypes.string, PropTypes.func]);
 var StringOrObject = PropTypes.oneOfType([PropTypes.string, PropTypes.object]);
 var StringObjectOrFunc = PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.func]);
-export var Column =
+
+var Column =
 /*#__PURE__*/
 function (_Component) {
   _inherits(Column, _Component);
@@ -51,17 +52,39 @@ function (_Component) {
 _defineProperty(Column, "_colType", 'c2-table-column');
 
 _defineProperty(Column, "propTypes", {
+  /** Unique column id */
   id: PropTypes.string.isRequired,
-  headerClassName: StringObjectOrFunc,
-  cellClassName: PropTypes.any,
-  footerClassName: StringOrObject,
+
+  /** Header label or func that accepts sort direction and sort function that should return jsx */
   header: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+
+  /** Class to apply to header th */
+  headerClassName: StringObjectOrFunc,
+
+  /** Class to apply to body td */
+  cellClassName: PropTypes.any,
+
+  /** Class to apply to footer td */
+  footerClassName: StringOrObject,
+
+  /** Func that accepts all rows and should return string/jsx */
   footer: PropTypes.func,
+
+  /** String or func that accepts row and should return string/jsx */
   cell: StringOrFunc,
-  orderValue: StringOrFunc
+
+  /** String id of column or func that accepts row and should return string */
+  orderValue: StringOrFunc,
+
+  /** Add sort click handler to column header */
+  sortOnHeaderClick: PropTypes.bool
 });
 
-export var ColumnGroup =
+_defineProperty(Column, "defaultProps", {
+  sortOnHeaderClick: true
+});
+
+var ColumnGroup =
 /*#__PURE__*/
 function (_Component2) {
   _inherits(ColumnGroup, _Component2);
@@ -85,13 +108,25 @@ function (_Component2) {
 _defineProperty(ColumnGroup, "_colType", 'c2-table-column-group');
 
 _defineProperty(ColumnGroup, "propTypes", {
+  /** Unique column id */
   id: PropTypes.string.isRequired,
-  headerClassName: StringObjectOrFunc,
+
+  /** Columns */
   children: PropTypes.arrayOf(function (propValue, key) {
     if (!isColumn(propValue[key])) {
       throw new Error('<ColumnGroup> can only have <Column>\'s as children. ');
     }
-  })
+  }).isRequired,
+
+  /** Class to apply to header th */
+  headerClassName: StringObjectOrFunc,
+
+  /** Add sort click handler to column group header */
+  sortOnHeaderClick: PropTypes.bool
+});
+
+_defineProperty(ColumnGroup, "defaultProps", {
+  sortOnHeaderClick: false
 });
 
 function isColumnGroup(child) {
@@ -491,7 +526,7 @@ function tdOrderValue(column, row) {
   }
 }
 
-export var Table =
+var Table =
 /*#__PURE__*/
 function (_Component6) {
   _inherits(Table, _Component6);
@@ -613,20 +648,23 @@ function (_Component6) {
 }(Component);
 
 _defineProperty(Table, "propTypes", {
+  /** Unique table id */
+  id: PropTypes.string.isRequired,
+
+  /** String or func that accepts row and should return a unique row id string */
+  rowId: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
+
+  /** The array of table data */
+  data: PropTypes.array.isRequired,
+
   /** The default column to order by */
   defaultOrderColumn: PropTypes.string,
 
   /** The default column direction */
   defaultOrderDir: PropTypes.oneOf(['asc', 'desc']),
 
-  /** The array of table data */
-  data: PropTypes.array.isRequired,
-
   /** Columns/ColumnGroups */
   children: ColumnOrColumnGroup,
-
-  /** Unique table id */
-  id: PropTypes.string.isRequired,
 
   /** Can be string or object(glamor) */
   className: StringOrObject,
@@ -634,14 +672,17 @@ _defineProperty(Table, "propTypes", {
   /** Style object */
   style: PropTypes.object,
 
-  /** String or func that passes row and should return string */
+  /** String or func that accepts row and should return string */
   rowClassName: StringOrFunc,
 
   /** Page number */
   page: PropTypes.number,
 
   /** Rows per page */
-  rowsPerPage: PropTypes.number
+  rowsPerPage: PropTypes.number,
+
+  /** Function that receives the row object and should return jsx */
+  onExpand: PropTypes.func
 });
 
 var Tfoot =
@@ -687,3 +728,5 @@ _defineProperty(Tfoot, "propTypes", {
   onExpand: PropTypes.func,
   data: PropTypes.array
 });
+
+export { Table, Column, ColumnGroup };

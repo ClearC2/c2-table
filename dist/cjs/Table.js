@@ -3,7 +3,7 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.Table = exports.ColumnGroup = exports.Column = void 0;
+exports.ColumnGroup = exports.Column = exports.Table = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
 
@@ -71,14 +71,36 @@ exports.Column = Column;
 _defineProperty(Column, "_colType", 'c2-table-column');
 
 _defineProperty(Column, "propTypes", {
+  /** Unique column id */
   id: _propTypes.default.string.isRequired,
-  headerClassName: StringObjectOrFunc,
-  cellClassName: _propTypes.default.any,
-  footerClassName: StringOrObject,
+
+  /** Header label or func that accepts sort direction and sort function that should return jsx */
   header: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]),
+
+  /** Class to apply to header th */
+  headerClassName: StringObjectOrFunc,
+
+  /** Class to apply to body td */
+  cellClassName: _propTypes.default.any,
+
+  /** Class to apply to footer td */
+  footerClassName: StringOrObject,
+
+  /** Func that accepts all rows and should return string/jsx */
   footer: _propTypes.default.func,
+
+  /** String or func that accepts row and should return string/jsx */
   cell: StringOrFunc,
-  orderValue: StringOrFunc
+
+  /** String id of column or func that accepts row and should return string */
+  orderValue: StringOrFunc,
+
+  /** Add sort click handler to column header */
+  sortOnHeaderClick: _propTypes.default.bool
+});
+
+_defineProperty(Column, "defaultProps", {
+  sortOnHeaderClick: true
 });
 
 var ColumnGroup =
@@ -107,13 +129,25 @@ exports.ColumnGroup = ColumnGroup;
 _defineProperty(ColumnGroup, "_colType", 'c2-table-column-group');
 
 _defineProperty(ColumnGroup, "propTypes", {
+  /** Unique column id */
   id: _propTypes.default.string.isRequired,
-  headerClassName: StringObjectOrFunc,
+
+  /** Columns */
   children: _propTypes.default.arrayOf(function (propValue, key) {
     if (!isColumn(propValue[key])) {
       throw new Error('<ColumnGroup> can only have <Column>\'s as children. ');
     }
-  })
+  }).isRequired,
+
+  /** Class to apply to header th */
+  headerClassName: StringObjectOrFunc,
+
+  /** Add sort click handler to column group header */
+  sortOnHeaderClick: _propTypes.default.bool
+});
+
+_defineProperty(ColumnGroup, "defaultProps", {
+  sortOnHeaderClick: false
 });
 
 function isColumnGroup(child) {
@@ -642,20 +676,23 @@ function (_Component6) {
 exports.Table = Table;
 
 _defineProperty(Table, "propTypes", {
+  /** Unique table id */
+  id: _propTypes.default.string.isRequired,
+
+  /** String or func that accepts row and should return a unique row id string */
+  rowId: _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]).isRequired,
+
+  /** The array of table data */
+  data: _propTypes.default.array.isRequired,
+
   /** The default column to order by */
   defaultOrderColumn: _propTypes.default.string,
 
   /** The default column direction */
   defaultOrderDir: _propTypes.default.oneOf(['asc', 'desc']),
 
-  /** The array of table data */
-  data: _propTypes.default.array.isRequired,
-
   /** Columns/ColumnGroups */
   children: ColumnOrColumnGroup,
-
-  /** Unique table id */
-  id: _propTypes.default.string.isRequired,
 
   /** Can be string or object(glamor) */
   className: StringOrObject,
@@ -663,14 +700,17 @@ _defineProperty(Table, "propTypes", {
   /** Style object */
   style: _propTypes.default.object,
 
-  /** String or func that passes row and should return string */
+  /** String or func that accepts row and should return string */
   rowClassName: StringOrFunc,
 
   /** Page number */
   page: _propTypes.default.number,
 
   /** Rows per page */
-  rowsPerPage: _propTypes.default.number
+  rowsPerPage: _propTypes.default.number,
+
+  /** Function that receives the row object and should return jsx */
+  onExpand: _propTypes.default.func
 });
 
 var Tfoot =
