@@ -14,13 +14,15 @@
   "sideEffects": false,
   "scripts": {
     "start": "cross-env NODE_ENV=development webpack-dev-server --config webpack.dev.js --hot",
-    "build": "rimraf dist && npm run build-es && npm run build-umd && npm run build-cjs",
-    "build-es": "cross-env NODE_ENV=production babel src/ -d dist/es/",
-    "build-umd": "cross-env NODE_ENV=production webpack --config webpack.prod.js",
-    "build-cjs": "cross-env NODE_ENV=production BABEL_ENV=cjs babel src/ -d dist/cjs/",
+    "build": "rimraf dist && npm run build:es && npm run build:umd && npm run build:cjs && npm run build:docs",
+    "build:es": "cross-env NODE_ENV=production babel src/ -d dist/es/",
+    "build:umd": "cross-env NODE_ENV=production webpack --config webpack.prod.js",
+    "build:cjs": "cross-env NODE_ENV=production BABEL_ENV=cjs babel src/ -d dist/cjs/",
+    "build:docs": "rimraf docs && docz build",
     "cm": "git-cz",
     "semantic-release": "semantic-release",
-    "test": "jest"
+    "test": "jest",
+    "docz:dev": "docz dev"
   },
   "husky": {
     "hooks": {
@@ -53,6 +55,7 @@
     "babel-loader": "^8.0.4",
     "c2-semantic-release": "ClearC2/c2-semantic-release#^1.0.0",
     "cross-env": "^5.2.0",
+    "docz": "^0.12.5",
     "eslint-config-c2-react": "^1.4.3",
     "jest": "^23.6.0",
     "jest-dom": "^1.12.1",

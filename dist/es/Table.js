@@ -613,15 +613,34 @@ function (_Component6) {
 }(Component);
 
 _defineProperty(Table, "propTypes", {
+  /** The default column to order by */
   defaultOrderColumn: PropTypes.string,
-  defaultOrderDir: PropTypes.string,
+
+  /** The default column direction */
+  defaultOrderDir: PropTypes.oneOf(['asc', 'desc']),
+
+  /** The array of table data */
   data: PropTypes.array.isRequired,
+
+  /** Columns/ColumnGroups */
   children: ColumnOrColumnGroup,
+
+  /** Unique table id */
   id: PropTypes.string.isRequired,
+
+  /** Can be string or object(glamor) */
   className: StringOrObject,
+
+  /** Style object */
   style: PropTypes.object,
+
+  /** String or func that passes row and should return string */
   rowClassName: StringOrFunc,
+
+  /** Page number */
   page: PropTypes.number,
+
+  /** Rows per page */
   rowsPerPage: PropTypes.number
 });
 
