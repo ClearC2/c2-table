@@ -353,3 +353,32 @@ test('render column group', () => {
   expect(queryTd(1, 2)).toHaveTextContent('a')
   expect(queryTd(1, 3)).toHaveTextContent('true')
 })
+
+test('column group sorts', () => {
+  const data = [
+    {id: 1, total: 4, foo: 'a', baz: 'true'},
+    {id: 2, total: 6, foo: 'b', baz: 'false'},
+    {id: 3, total: 1, foo: 'c', baz: 'null'}
+  ]
+  const {queryTd, getByTestId} = render((
+    <Table data={data} rowId='id' id={tableId}>
+      <Column id='id' />
+      <ColumnGroup id='total'>
+        <Column id='foo' />
+        <Column id='baz' />
+      </ColumnGroup>
+    </Table>
+  ))
+  expect(queryTd(1, 2)).toHaveTextContent('a')
+  expect(queryTd(2, 2)).toHaveTextContent('b')
+  expect(queryTd(3, 2)).toHaveTextContent('c')
+  const totalHeader = getByTestId('header-total')
+  fireEvent.click(totalHeader)
+  expect(queryTd(1, 2)).toHaveTextContent('c')
+  expect(queryTd(2, 2)).toHaveTextContent('a')
+  expect(queryTd(3, 2)).toHaveTextContent('b')
+  fireEvent.click(totalHeader)
+  expect(queryTd(1, 2)).toHaveTextContent('b')
+  expect(queryTd(2, 2)).toHaveTextContent('a')
+  expect(queryTd(3, 2)).toHaveTextContent('c')
+})
