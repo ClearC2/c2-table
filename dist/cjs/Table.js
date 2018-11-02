@@ -147,7 +147,7 @@ _defineProperty(ColumnGroup, "propTypes", {
 });
 
 _defineProperty(ColumnGroup, "defaultProps", {
-  sortOnHeaderClick: false
+  sortOnHeaderClick: true
 });
 
 function isColumnGroup(child) {
@@ -244,7 +244,8 @@ function (_Component3) {
         onClick: function onClick() {
           return _this2.props.sortOnHeaderClick === false ? null : _this2.onHeaderClick();
         },
-        className: "".concat(this.props.className || '', " ").concat(this.getClickableClass()).trim()
+        className: "".concat(this.props.className || '', " ").concat(this.getClickableClass()).trim(),
+        "data-testid": "header-".concat(this.props.id)
       }, this.headerContent());
     }
   }, {
@@ -377,6 +378,17 @@ function flattenColumns(columns) {
   });
 
   return childs;
+}
+
+function findColumn(columns, id) {
+  var found = _react.default.Children.toArray(columns).find(function (column) {
+    return column.props.id === id;
+  });
+
+  if (found) return found;
+  return flattenColumns(columns).find(function (column) {
+    return column.props.id === id;
+  });
 }
 
 var Tbody =
@@ -619,9 +631,7 @@ function (_Component6) {
           orderColumn = _this$state.orderColumn,
           orderDir = _this$state.orderDir;
       var data = this.props.data;
-      var column = flattenColumns(this.props.children).filter(function (column) {
-        return column.props.id === orderColumn;
-      })[0];
+      var column = findColumn(this.props.children, orderColumn);
       if (!column) return data;
       data = data.map(function (row) {
         return {
