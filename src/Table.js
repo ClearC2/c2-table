@@ -71,7 +71,7 @@ class ColumnGroup extends Component {
     sortOnHeaderClick: PropTypes.bool
   }
   static defaultProps = {
-    sortOnHeaderClick: false
+    sortOnHeaderClick: true
   }
 
   render () {
@@ -165,6 +165,7 @@ class Header extends Component {
         rowSpan={this.props.hasGroups && colSpan === 1 ? 2 : 1}
         onClick={() => this.props.sortOnHeaderClick === false ? null : this.onHeaderClick()}
         className={`${this.props.className || ''} ${this.getClickableClass()}`.trim()}
+        data-testid={`header-${this.props.id}`}
       >
         {this.headerContent()}
       </th>
@@ -267,6 +268,12 @@ function flattenColumns (columns) {
   })
 
   return childs
+}
+
+function findColumn (columns, id) {
+  const found = React.Children.toArray(columns).find(column => column.props.id === id)
+  if (found) return found
+  return flattenColumns(columns).find(column => column.props.id === id)
 }
 
 class Tbody extends Component {
@@ -456,9 +463,7 @@ class Table extends Component {
   getData () {
     const {orderColumn, orderDir} = this.state
     let {data} = this.props
-    const column = flattenColumns(this.props.children)
-      .filter(column => column.props.id === orderColumn)[0]
-
+    const column = findColumn(this.props.children, orderColumn)
     if (!column) return data
 
     data = data.map(row => {

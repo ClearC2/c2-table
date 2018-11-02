@@ -12,9 +12,9 @@ class FooBar extends Component {
 }
 
 const data = [
-  {foo: 'a', bar: 123, bam: 'abc', bama: 1},
-  {foo: 'b', bar: 456, bam: 'def', bama: 2},
-  {foo: 'c', bar: 789, bam: 'ghi', bama: 3}
+  {foo: 'a', baz: 4, bar: 123, bam: 'abc', bama: 1},
+  {foo: 'b', baz: 6, bar: 456, bam: 'def', bama: 2},
+  {foo: 'c', baz: 1, bar: 789, bam: 'ghi', bama: 3}
 ]
 
 function App () {
