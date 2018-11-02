@@ -41,7 +41,7 @@ function App () {
           >
             <Column id='foo' headerClassName='col-xs-2' cellClassName={row => row.bam} footerClassName='foo-footer' />
             <Column id='bar' headerClassName='col-xs-2' />
-            <ColumnGroup id='baz' headerClassName='col-xs-2 text-center' sortOnHeaderClick>
+            <ColumnGroup id='baz' headerClassName='col-xs-2 text-center'>
               <Column id='bam' headerClassName='col-xs-1' />
               <Column
                 id='bama'
