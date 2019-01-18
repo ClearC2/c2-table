@@ -43,7 +43,9 @@ class Column extends Component {
     /** String id of column or func that accepts row and should return string */
     orderValue: StringOrFunc,
     /** Add sort click handler to column header */
-    sortOnHeaderClick: PropTypes.bool
+    sortOnHeaderClick: PropTypes.bool,
+    /** Custom sort function: (data, orderDir) => data */
+    sort: PropTypes.func
   }
   static defaultProps = {
     sortOnHeaderClick: true
@@ -68,7 +70,9 @@ class ColumnGroup extends Component {
     /** Class to apply to header th */
     headerClassName: StringObjectOrFunc,
     /** Add sort click handler to column group header */
-    sortOnHeaderClick: PropTypes.bool
+    sortOnHeaderClick: PropTypes.bool,
+    /** Custom sort function: (data, orderDir) => data */
+    sort: PropTypes.func
   }
   static defaultProps = {
     sortOnHeaderClick: true
@@ -465,6 +469,9 @@ class Table extends Component {
     let {data} = this.props
     const column = findColumn(this.props.children, orderColumn)
     if (!column) return data
+    if (typeof column.props.sort === 'function') {
+      return column.props.sort(data, orderDir)
+    }
 
     data = data.map(row => {
       return {row, orderValue: tdOrderValue(column, row)}
