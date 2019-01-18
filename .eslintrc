@@ -3,6 +3,7 @@
     "c2-react"
   ],
   "globals": {
-    "expect": false
+    "expect": false,
+    "jest": false
   }
 }

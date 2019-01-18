@@ -382,3 +382,38 @@ test('column group sorts', () => {
   expect(queryTd(2, 2)).toHaveTextContent('a')
   expect(queryTd(3, 2)).toHaveTextContent('c')
 })
+
+test('can pass custom sort function', () => {
+  const data = [
+    {id: 1, total: 4, foo: 'a', baz: 'true'},
+    {id: 2, total: 6, foo: 'b', baz: 'false'},
+    {id: 3, total: 1, foo: 'c', baz: 'null'}
+  ]
+  const reordered = [data[1], data[0], data[2]]
+  const testFn = jest.fn()
+  const {queryTd, queryTh} = render((
+    <Table data={data} rowId='id' id={tableId}>
+      <Column id='id' />
+      <Column
+        id='foo'
+        sort={(data, dir) => {
+          testFn(data, dir)
+          return dir === 'asc' ? reordered : [...reordered].reverse()
+        }}
+      />
+    </Table>
+  ))
+  expect(queryTd(1, 2)).toHaveTextContent('a')
+  expect(queryTd(2, 2)).toHaveTextContent('b')
+  expect(queryTd(3, 2)).toHaveTextContent('c')
+  fireEvent.click(queryTh(1, 2))
+  expect(testFn).toHaveBeenCalledWith(data, 'asc')
+  expect(queryTd(1, 2)).toHaveTextContent('b')
+  expect(queryTd(2, 2)).toHaveTextContent('a')
+  expect(queryTd(3, 2)).toHaveTextContent('c')
+  fireEvent.click(queryTh(1, 2))
+  expect(testFn).toHaveBeenCalledWith(data, 'desc')
+  expect(queryTd(1, 2)).toHaveTextContent('c')
+  expect(queryTd(2, 2)).toHaveTextContent('a')
+  expect(queryTd(3, 2)).toHaveTextContent('b')
+})
