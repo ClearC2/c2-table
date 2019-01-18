@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/ClearC2/c2-table/compare/v1.2.1...v1.3.0) (2019-01-18)
+
+
+### Features
+
+* add custom column sorting ([f3cc1a7](https://github.com/ClearC2/c2-table/commit/f3cc1a7))
+
 ## [1.2.1](https://github.com/ClearC2/c2-table/compare/v1.2.0...v1.2.1) (2018-11-02)
 
 

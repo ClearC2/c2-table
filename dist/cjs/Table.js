@@ -96,7 +96,10 @@ _defineProperty(Column, "propTypes", {
   orderValue: StringOrFunc,
 
   /** Add sort click handler to column header */
-  sortOnHeaderClick: _propTypes.default.bool
+  sortOnHeaderClick: _propTypes.default.bool,
+
+  /** Custom sort function: (data, orderDir) => data */
+  sort: _propTypes.default.func
 });
 
 _defineProperty(Column, "defaultProps", {
@@ -143,7 +146,10 @@ _defineProperty(ColumnGroup, "propTypes", {
   headerClassName: StringObjectOrFunc,
 
   /** Add sort click handler to column group header */
-  sortOnHeaderClick: _propTypes.default.bool
+  sortOnHeaderClick: _propTypes.default.bool,
+
+  /** Custom sort function: (data, orderDir) => data */
+  sort: _propTypes.default.func
 });
 
 _defineProperty(ColumnGroup, "defaultProps", {
@@ -633,6 +639,11 @@ function (_Component6) {
       var data = this.props.data;
       var column = findColumn(this.props.children, orderColumn);
       if (!column) return data;
+
+      if (typeof column.props.sort === 'function') {
+        return column.props.sort(data, orderDir);
+      }
+
       data = data.map(function (row) {
         return {
           row: row,
