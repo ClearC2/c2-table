@@ -150,6 +150,7 @@ class Header extends Component {
   }
 
   onHeaderClick = () => {
+    if (this.props.sortOnHeaderClick === false) return
     const dir = this.props.orderDir === 'asc' || !this.props.orderDir ? 'desc' : 'asc'
     this.props.setOrderColumn(this.props.id)
     this.props.setOrderDir(dir)
@@ -167,7 +168,7 @@ class Header extends Component {
       <th
         colSpan={colSpan || 1}
         rowSpan={this.props.hasGroups && colSpan === 1 ? 2 : 1}
-        onClick={() => this.props.sortOnHeaderClick === false ? null : this.onHeaderClick()}
+        onClick={this.onHeaderClick}
         className={`${this.props.className || ''} ${this.getClickableClass()}`.trim()}
         data-testid={`header-${this.props.id}`}
       >
@@ -180,7 +181,7 @@ class Header extends Component {
     return (
       <th
         key={this.props.id}
-        onClick={() => this.props.sortOnHeaderClick === false ? null : this.onHeaderClick()}
+        onClick={this.onHeaderClick}
         className={`${this.props.className || ''} ${this.getClickableClass()}`.trim()}
       >
         {this.headerContent()}
@@ -197,7 +198,15 @@ class Thead extends Component {
   static propTypes = {
     children: ColumnOrColumnGroup,
     onExpand: PropTypes.func,
-    expandClassName: StringOrObject
+    expandClassName: StringOrObject,
+    orderColumn: PropTypes.string,
+    orderDir: PropTypes.string,
+    setOrderColumn: PropTypes.func.isRequired,
+    setOrderDir: PropTypes.func.isRequired,
+    clickableClass: PropTypes.string,
+    sortDescIcon: PropTypes.any,
+    sortAscIcon: PropTypes.any,
+    onSort: PropTypes.func
   }
 
   hasGroups () {
@@ -217,10 +226,19 @@ class Thead extends Component {
         {React.Children.map(this.props.children, column => (
           <Header
             key={column.props.id}
-            {...this.props}
-            {...column.props}
-            hasGroups={hasGroups}
+            orderColumn={this.props.orderColumn}
+            orderDir={this.props.orderDir}
+            setOrderColumn={this.props.setOrderColumn}
+            setOrderDir={this.props.setOrderDir}
+            clickableClass={this.props.clickableClass}
+            onSort={this.props.onSort}
+            sortDescIcon={this.props.sortDescIcon}
+            sortAscIcon={this.props.sortAscIcon}
+            id={column.props.id}
+            header={column.props.header}
             className={column.props.headerClassName}
+            sortOnHeaderClick={column.props.sortOnHeaderClick}
+            hasGroups={hasGroups}
             isFirstRow
           >
             {column.props.children}
@@ -238,9 +256,17 @@ class Thead extends Component {
           return React.Children.map(column.props.children, child => (
             <Header
               key={child.props.id}
-              {...this.props}
-              {...child.props}
-              className={child.props.headerClassName}
+              orderColumn={this.props.orderColumn}
+              setOrderColumn={this.props.setOrderColumn}
+              setOrderDir={this.props.setOrderDir}
+              clickableClass={this.props.clickableClass}
+              onSort={this.props.onSort}
+              sortDescIcon={this.props.sortDescIcon}
+              sortAscIcon={this.props.sortAscIcon}
+              id={column.props.id}
+              header={column.props.header}
+              className={column.props.headerClassName}
+              sortOnHeaderClick={column.props.sortOnHeaderClick}
             >
               {child.props.children}
             </Header>
@@ -429,18 +455,36 @@ class Table extends Component {
     defaultOrderDir: PropTypes.oneOf(['asc', 'desc']),
     /** Columns/ColumnGroups */
     children: ColumnOrColumnGroup,
-    /** Can be string or object(glamor) */
-    className: StringOrObject,
     /** Style object */
     style: PropTypes.object,
+    /** Can be string or object(glamor) */
+    className: StringOrObject,
     /** String or func that accepts row and should return string */
     rowClassName: StringOrFunc,
+    /** Expanded td's className */
+    expandClassName: StringOrObject,
+    /** Class to apply to clickable elements */
+    clickableClass: PropTypes.string,
     /** Page number */
     page: PropTypes.number,
     /** Rows per page */
     rowsPerPage: PropTypes.number,
     /** Function that receives the row object and should return jsx */
-    onExpand: PropTypes.func
+    onExpand: PropTypes.func,
+    /** Array of rowIds that should be expanded on mount */
+    expanded: PropTypes.array,
+    /** Icon to show for expanded rows */
+    expandedIcon: PropTypes.any,
+    /** Icon to show for collapsed rows */
+    collapsedIcon: PropTypes.any,
+    /** Show elements when no rows */
+    onEmpty: PropTypes.node,
+    /** Icon to show when column is desc sorted */
+    sortDescIcon: PropTypes.any,
+    /** Icon to show when column is asc sorted */
+    sortAscIcon: PropTypes.any,
+    /** Function that is called on sort, (columnId, dir) => {}  */
+    onSort: PropTypes.func
   }
   state = {}
 
@@ -501,27 +545,47 @@ class Table extends Component {
   }
 
   render () {
-    const tableProps = {
-      className: this.props.className,
-      id: this.props.id,
-      style: this.props.style
-    }
     const data = this.getData()
     const pagedData = this.getPagedData()
     return (
-      <table {...tableProps}>
+      <table
+        className={this.props.className}
+        id={this.props.id}
+        style={this.props.style}
+      >
         <Thead
-          {...this.props}
+          id={this.props.id}
           orderColumn={this.state.orderColumn}
           orderDir={this.state.orderDir}
           setOrderColumn={this.setOrderColumn}
           setOrderDir={this.setOrderDir}
+          children={this.props.children}
+          onExpand={this.props.onExpand}
+          expandClassName={this.props.expandClassName}
+          clickableClass={this.props.clickableClass}
+          sortDescIcon={this.props.sortDescIcon}
+          sortAscIcon={this.props.sortAscIcon}
+          onSort={this.props.onSort}
         />
         <Tbody
-          {...this.props}
+          id={this.props.id}
+          rowId={this.props.rowId}
+          expandClassName={this.props.expandClassName}
+          clickableClass={this.props.clickableClass}
+          children={this.props.children}
+          expandedIcon={this.props.expandedIcon}
+          collapsedIcon={this.props.collapsedIcon}
+          onExpand={this.props.onExpand}
+          expanded={this.props.expanded}
+          onEmpty={this.props.onEmpty}
+          rowClassName={this.props.rowClassName}
           data={pagedData}
         />
-        <Tfoot {...this.props} data={data} />
+        <Tfoot
+          children={this.props.children}
+          onExpand={this.props.onExpand}
+          data={data}
+        />
       </table>
     )
   }
