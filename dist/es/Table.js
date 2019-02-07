@@ -328,17 +328,19 @@ function (_Component4) {
           return React.createElement(Header, {
             key: child.props.id,
             orderColumn: _this3.props.orderColumn,
+            orderDir: _this3.props.orderDir,
             setOrderColumn: _this3.props.setOrderColumn,
             setOrderDir: _this3.props.setOrderDir,
             clickableClass: _this3.props.clickableClass,
             onSort: _this3.props.onSort,
             sortDescIcon: _this3.props.sortDescIcon,
             sortAscIcon: _this3.props.sortAscIcon,
-            id: column.props.id,
-            header: column.props.header,
-            className: column.props.headerClassName,
-            sortOnHeaderClick: column.props.sortOnHeaderClick
-          }, child.props.children);
+            id: child.props.id,
+            header: child.props.header,
+            className: child.props.headerClassName,
+            sortOnHeaderClick: child.props.sortOnHeaderClick,
+            children: child.props.children
+          });
         });
       }));
     }

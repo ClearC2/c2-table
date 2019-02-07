@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/ClearC2/c2-table/compare/v1.3.1...v1.3.2) (2019-02-07)
+
+
+### Bug Fixes
+
+* **column-groups:** fix column sub group bug ([714afd8](https://github.com/ClearC2/c2-table/commit/714afd8))
+
 ## [1.3.1](https://github.com/ClearC2/c2-table/compare/v1.3.0...v1.3.1) (2019-02-07)
 
 
