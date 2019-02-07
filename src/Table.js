@@ -181,7 +181,7 @@ class Header extends Component {
     return (
       <th
         key={this.props.id}
-        onClick={() => this.props.sortOnHeaderClick === false ? null : this.onHeaderClick()}
+        onClick={this.onHeaderClick}
         className={`${this.props.className || ''} ${this.getClickableClass()}`.trim()}
       >
         {this.headerContent()}
