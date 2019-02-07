@@ -257,19 +257,19 @@ class Thead extends Component {
             <Header
               key={child.props.id}
               orderColumn={this.props.orderColumn}
+              orderDir={this.props.orderDir}
               setOrderColumn={this.props.setOrderColumn}
               setOrderDir={this.props.setOrderDir}
               clickableClass={this.props.clickableClass}
               onSort={this.props.onSort}
               sortDescIcon={this.props.sortDescIcon}
               sortAscIcon={this.props.sortAscIcon}
-              id={column.props.id}
-              header={column.props.header}
-              className={column.props.headerClassName}
-              sortOnHeaderClick={column.props.sortOnHeaderClick}
-            >
-              {child.props.children}
-            </Header>
+              id={child.props.id}
+              header={child.props.header}
+              className={child.props.headerClassName}
+              sortOnHeaderClick={child.props.sortOnHeaderClick}
+              children={child.props.children}
+            />
           ))
         })}
       </tr>
