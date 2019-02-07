@@ -15,8 +15,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
 
-function _extends() { _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; }; return _extends.apply(this, arguments); }
-
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -197,6 +195,7 @@ function (_Component3) {
     _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(Header)).call.apply(_getPrototypeOf2, [this].concat(args)));
 
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onHeaderClick", function () {
+      if (_this.props.sortOnHeaderClick === false) return;
       var dir = _this.props.orderDir === 'asc' || !_this.props.orderDir ? 'desc' : 'asc';
 
       _this.props.setOrderColumn(_this.props.id);
@@ -241,15 +240,11 @@ function (_Component3) {
   }, {
     key: "renderFirstRowHeader",
     value: function renderFirstRowHeader() {
-      var _this2 = this;
-
       var colSpan = this.props.children ? this.props.children.length : 1;
       return _react.default.createElement("th", {
         colSpan: colSpan || 1,
         rowSpan: this.props.hasGroups && colSpan === 1 ? 2 : 1,
-        onClick: function onClick() {
-          return _this2.props.sortOnHeaderClick === false ? null : _this2.onHeaderClick();
-        },
+        onClick: this.onHeaderClick,
         className: "".concat(this.props.className || '', " ").concat(this.getClickableClass()).trim(),
         "data-testid": "header-".concat(this.props.id)
       }, this.headerContent());
@@ -257,13 +252,9 @@ function (_Component3) {
   }, {
     key: "renderSecondRowHeader",
     value: function renderSecondRowHeader() {
-      var _this3 = this;
-
       return _react.default.createElement("th", {
         key: this.props.id,
-        onClick: function onClick() {
-          return _this3.props.sortOnHeaderClick === false ? null : _this3.onHeaderClick();
-        },
+        onClick: this.onHeaderClick,
         className: "".concat(this.props.className || '', " ").concat(this.getClickableClass()).trim()
       }, this.headerContent());
     }
@@ -324,35 +315,54 @@ function (_Component4) {
   }, {
     key: "renderFirstRow",
     value: function renderFirstRow() {
-      var _this4 = this;
+      var _this2 = this;
 
       var hasGroups = this.hasGroups();
       return _react.default.createElement("tr", null, this.props.onExpand ? _react.default.createElement("th", {
         rowSpan: hasGroups ? 2 : 1,
         className: this.props.expandClassName
       }) : null, _react.default.Children.map(this.props.children, function (column) {
-        return _react.default.createElement(Header, _extends({
-          key: column.props.id
-        }, _this4.props, column.props, {
-          hasGroups: hasGroups,
+        return _react.default.createElement(Header, {
+          key: column.props.id,
+          orderColumn: _this2.props.orderColumn,
+          orderDir: _this2.props.orderDir,
+          setOrderColumn: _this2.props.setOrderColumn,
+          setOrderDir: _this2.props.setOrderDir,
+          clickableClass: _this2.props.clickableClass,
+          onSort: _this2.props.onSort,
+          sortDescIcon: _this2.props.sortDescIcon,
+          sortAscIcon: _this2.props.sortAscIcon,
+          id: column.props.id,
+          header: column.props.header,
           className: column.props.headerClassName,
+          sortOnHeaderClick: column.props.sortOnHeaderClick,
+          hasGroups: hasGroups,
           isFirstRow: true
-        }), column.props.children);
+        }, column.props.children);
       }));
     }
   }, {
     key: "renderSecondRow",
     value: function renderSecondRow() {
-      var _this5 = this;
+      var _this3 = this;
 
       return _react.default.createElement("tr", null, _react.default.Children.map(this.props.children, function (column) {
         if (!isColumnGroup(column)) return null;
         return _react.default.Children.map(column.props.children, function (child) {
-          return _react.default.createElement(Header, _extends({
-            key: child.props.id
-          }, _this5.props, child.props, {
-            className: child.props.headerClassName
-          }), child.props.children);
+          return _react.default.createElement(Header, {
+            key: child.props.id,
+            orderColumn: _this3.props.orderColumn,
+            setOrderColumn: _this3.props.setOrderColumn,
+            setOrderDir: _this3.props.setOrderDir,
+            clickableClass: _this3.props.clickableClass,
+            onSort: _this3.props.onSort,
+            sortDescIcon: _this3.props.sortDescIcon,
+            sortAscIcon: _this3.props.sortAscIcon,
+            id: column.props.id,
+            header: column.props.header,
+            className: column.props.headerClassName,
+            sortOnHeaderClick: column.props.sortOnHeaderClick
+          }, child.props.children);
         });
       }));
     }
@@ -369,7 +379,15 @@ function (_Component4) {
 _defineProperty(Thead, "propTypes", {
   children: ColumnOrColumnGroup,
   onExpand: _propTypes.default.func,
-  expandClassName: StringOrObject
+  expandClassName: StringOrObject,
+  orderColumn: _propTypes.default.string,
+  orderDir: _propTypes.default.string,
+  setOrderColumn: _propTypes.default.func.isRequired,
+  setOrderDir: _propTypes.default.func.isRequired,
+  clickableClass: _propTypes.default.string,
+  sortDescIcon: _propTypes.default.any,
+  sortAscIcon: _propTypes.default.any,
+  onSort: _propTypes.default.func
 });
 
 function flattenColumns(columns) {
@@ -403,14 +421,14 @@ function (_Component5) {
   _inherits(Tbody, _Component5);
 
   function Tbody(props) {
-    var _this6;
+    var _this4;
 
     _classCallCheck(this, Tbody);
 
-    _this6 = _possibleConstructorReturn(this, _getPrototypeOf(Tbody).call(this, props));
+    _this4 = _possibleConstructorReturn(this, _getPrototypeOf(Tbody).call(this, props));
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this6)), "getRowClassName", function (row) {
-      var rowClassName = _this6.props.rowClassName;
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this4)), "getRowClassName", function (row) {
+      var rowClassName = _this4.props.rowClassName;
       if (typeof rowClassName === 'string') return rowClassName;
       if (typeof rowClassName === 'function') return rowClassName(row);
       return '';
@@ -424,10 +442,10 @@ function (_Component5) {
       });
     }
 
-    _this6.state = {
+    _this4.state = {
       expanded: expanded
     };
-    return _this6;
+    return _this4;
   }
 
   _createClass(Tbody, [{
@@ -442,7 +460,7 @@ function (_Component5) {
   }, {
     key: "expandCell",
     value: function expandCell(row) {
-      var _this7 = this;
+      var _this5 = this;
 
       var _this$props2 = this.props,
           rowId = _this$props2.rowId,
@@ -453,10 +471,10 @@ function (_Component5) {
       var id = getRowId(rowId, row);
 
       var onClick = function onClick() {
-        var expanded = _this7.state.expanded;
+        var expanded = _this5.state.expanded;
         expanded[id] = !expanded[id];
 
-        _this7.setState({
+        _this5.setState({
           expanded: expanded
         });
       };
@@ -469,7 +487,7 @@ function (_Component5) {
   }, {
     key: "render",
     value: function render() {
-      var _this8 = this;
+      var _this6 = this;
 
       var _this$props3 = this.props,
           children = _this$props3.children,
@@ -481,7 +499,7 @@ function (_Component5) {
       var data = this.props.data || [];
       var rows = [];
       data.forEach(function (row, index) {
-        var rowClassName = _this8.getRowClassName(row);
+        var rowClassName = _this6.getRowClassName(row);
 
         var id = getRowId(rowId, row);
         var rId = "".concat(tableId, "-").concat(id);
@@ -489,14 +507,14 @@ function (_Component5) {
           key: "tr-".concat(rId),
           id: "tr-".concat(rId),
           className: rowClassName
-        }, onExpand ? _this8.expandCell(row) : null, columns.map(function (column) {
+        }, onExpand ? _this6.expandCell(row) : null, columns.map(function (column) {
           return _react.default.createElement("td", {
             key: "td-".concat(rId, "-").concat(column.props.id),
-            className: _this8.cellClassName(column, row)
+            className: _this6.cellClassName(column, row)
           }, tdContent(column, row, index));
         })));
 
-        if (onExpand && _this8.state.expanded[id]) {
+        if (onExpand && _this6.state.expanded[id]) {
           rows.push(_react.default.createElement("tr", {
             key: "tr-".concat(rId, "-expanded"),
             className: "".concat(rowClassName, "-expanded")
@@ -578,7 +596,7 @@ function (_Component6) {
   function Table() {
     var _getPrototypeOf3;
 
-    var _this9;
+    var _this7;
 
     _classCallCheck(this, Table);
 
@@ -586,34 +604,34 @@ function (_Component6) {
       args[_key2] = arguments[_key2];
     }
 
-    _this9 = _possibleConstructorReturn(this, (_getPrototypeOf3 = _getPrototypeOf(Table)).call.apply(_getPrototypeOf3, [this].concat(args)));
+    _this7 = _possibleConstructorReturn(this, (_getPrototypeOf3 = _getPrototypeOf(Table)).call.apply(_getPrototypeOf3, [this].concat(args)));
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this9)), "state", {});
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this7)), "state", {});
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this9)), "setOrderColumn", function (column) {
-      _this9.setState({
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this7)), "setOrderColumn", function (column) {
+      _this7.setState({
         orderColumn: column
       });
     });
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this9)), "setOrderDir", function () {
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this7)), "setOrderDir", function () {
       var dir = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'desc';
 
-      _this9.setState({
+      _this7.setState({
         orderDir: dir
       });
     });
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this9)), "getPagedData", function () {
-      var data = _this9.getData();
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this7)), "getPagedData", function () {
+      var data = _this7.getData();
 
-      if (_this9.props.page === undefined || _this9.props.rowsPerPage === undefined) return data;
-      var begin = _this9.props.page * _this9.props.rowsPerPage;
-      var end = begin + _this9.props.rowsPerPage;
+      if (_this7.props.page === undefined || _this7.props.rowsPerPage === undefined) return data;
+      var begin = _this7.props.page * _this7.props.rowsPerPage;
+      var end = begin + _this7.props.rowsPerPage;
       return data.slice(begin, end);
     });
 
-    return _this9;
+    return _this7;
   }
 
   _createClass(Table, [{
@@ -671,23 +689,43 @@ function (_Component6) {
   }, {
     key: "render",
     value: function render() {
-      var tableProps = {
+      var data = this.getData();
+      var pagedData = this.getPagedData();
+      return _react.default.createElement("table", {
         className: this.props.className,
         id: this.props.id,
         style: this.props.style
-      };
-      var data = this.getData();
-      var pagedData = this.getPagedData();
-      return _react.default.createElement("table", tableProps, _react.default.createElement(Thead, _extends({}, this.props, {
+      }, _react.default.createElement(Thead, {
+        id: this.props.id,
         orderColumn: this.state.orderColumn,
         orderDir: this.state.orderDir,
         setOrderColumn: this.setOrderColumn,
-        setOrderDir: this.setOrderDir
-      })), _react.default.createElement(Tbody, _extends({}, this.props, {
+        setOrderDir: this.setOrderDir,
+        children: this.props.children,
+        onExpand: this.props.onExpand,
+        expandClassName: this.props.expandClassName,
+        clickableClass: this.props.clickableClass,
+        sortDescIcon: this.props.sortDescIcon,
+        sortAscIcon: this.props.sortAscIcon,
+        onSort: this.props.onSort
+      }), _react.default.createElement(Tbody, {
+        id: this.props.id,
+        rowId: this.props.rowId,
+        expandClassName: this.props.expandClassName,
+        clickableClass: this.props.clickableClass,
+        children: this.props.children,
+        expandedIcon: this.props.expandedIcon,
+        collapsedIcon: this.props.collapsedIcon,
+        onExpand: this.props.onExpand,
+        expanded: this.props.expanded,
+        onEmpty: this.props.onEmpty,
+        rowClassName: this.props.rowClassName,
         data: pagedData
-      })), _react.default.createElement(Tfoot, _extends({}, this.props, {
+      }), _react.default.createElement(Tfoot, {
+        children: this.props.children,
+        onExpand: this.props.onExpand,
         data: data
-      })));
+      }));
     }
   }]);
 
@@ -715,14 +753,20 @@ _defineProperty(Table, "propTypes", {
   /** Columns/ColumnGroups */
   children: ColumnOrColumnGroup,
 
-  /** Can be string or object(glamor) */
-  className: StringOrObject,
-
   /** Style object */
   style: _propTypes.default.object,
 
+  /** Can be string or object(glamor) */
+  className: StringOrObject,
+
   /** String or func that accepts row and should return string */
   rowClassName: StringOrFunc,
+
+  /** Expanded td's className */
+  expandClassName: StringOrObject,
+
+  /** Class to apply to clickable elements */
+  clickableClass: _propTypes.default.string,
 
   /** Page number */
   page: _propTypes.default.number,
@@ -731,7 +775,28 @@ _defineProperty(Table, "propTypes", {
   rowsPerPage: _propTypes.default.number,
 
   /** Function that receives the row object and should return jsx */
-  onExpand: _propTypes.default.func
+  onExpand: _propTypes.default.func,
+
+  /** Array of rowIds that should be expanded on mount */
+  expanded: _propTypes.default.array,
+
+  /** Icon to show for expanded rows */
+  expandedIcon: _propTypes.default.any,
+
+  /** Icon to show for collapsed rows */
+  collapsedIcon: _propTypes.default.any,
+
+  /** Show elements when no rows */
+  onEmpty: _propTypes.default.node,
+
+  /** Icon to show when column is desc sorted */
+  sortDescIcon: _propTypes.default.any,
+
+  /** Icon to show when column is asc sorted */
+  sortAscIcon: _propTypes.default.any,
+
+  /** Function that is called on sort, (columnId, dir) => {}  */
+  onSort: _propTypes.default.func
 });
 
 var Tfoot =
@@ -748,7 +813,7 @@ function (_Component7) {
   _createClass(Tfoot, [{
     key: "render",
     value: function render() {
-      var _this10 = this;
+      var _this8 = this;
 
       if (!this.props.children) return null;
       var columns = flattenColumns(this.props.children);
@@ -760,7 +825,7 @@ function (_Component7) {
         return _react.default.createElement("td", {
           key: column.props.id,
           className: column.props.footerClassName || ''
-        }, column.props.footer ? column.props.footer(_this10.props.data) : null);
+        }, column.props.footer ? column.props.footer(_this8.props.data) : null);
       })));
     }
   }]);

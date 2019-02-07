@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/ClearC2/c2-table/compare/v1.3.0...v1.3.1) (2019-02-07)
+
+
+### Performance Improvements
+
+* optimize rendering ([#9](https://github.com/ClearC2/c2-table/issues/9)) ([22a4616](https://github.com/ClearC2/c2-table/commit/22a4616))
+
 # [1.3.0](https://github.com/ClearC2/c2-table/compare/v1.2.1...v1.3.0) (2019-01-18)
 
 
