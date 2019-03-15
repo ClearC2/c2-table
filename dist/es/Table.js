@@ -114,7 +114,7 @@ _defineProperty(ColumnGroup, "propTypes", {
 
   /** Columns */
   children: PropTypes.arrayOf(function (propValue, key) {
-    if (!isColumn(propValue[key])) {
+    if (propValue[key] && !isColumn(propValue[key])) {
       throw new Error('<ColumnGroup> can only have <Column>\'s as children. ');
     }
   }).isRequired,
@@ -134,11 +134,19 @@ _defineProperty(ColumnGroup, "defaultProps", {
 });
 
 function isColumnGroup(child) {
+  child = child || {};
   return areComponentsEqual(child.type, ColumnGroup);
 }
 
 function isColumn(child) {
+  child = child || {};
   return areComponentsEqual(child.type, Column);
+}
+
+function getColumns(children) {
+  return React.Children.toArray(children).filter(function (child) {
+    return !!child;
+  });
 }
 
 var ColumnOrColumnGroup = function ColumnOrColumnGroup(props, propName) {
@@ -297,7 +305,7 @@ function (_Component4) {
       return React.createElement("tr", null, this.props.onExpand ? React.createElement("th", {
         rowSpan: hasGroups ? 2 : 1,
         className: this.props.expandClassName
-      }) : null, React.Children.map(this.props.children, function (column) {
+      }) : null, getColumns(this.props.children).map(function (column) {
         return React.createElement(Header, {
           key: column.props.id,
           orderColumn: _this2.props.orderColumn,
@@ -322,9 +330,9 @@ function (_Component4) {
     value: function renderSecondRow() {
       var _this3 = this;
 
-      return React.createElement("tr", null, React.Children.map(this.props.children, function (column) {
+      return React.createElement("tr", null, getColumns(this.props.children).map(function (column) {
         if (!isColumnGroup(column)) return null;
-        return React.Children.map(column.props.children, function (child) {
+        return getColumns(column.props.children).map(function (child) {
           return React.createElement(Header, {
             key: child.props.id,
             orderColumn: _this3.props.orderColumn,
@@ -370,18 +378,20 @@ _defineProperty(Thead, "propTypes", {
 
 function flattenColumns(columns) {
   var childs = [];
-  React.Children.forEach(columns, function (child) {
+  getColumns(columns).forEach(function (child) {
     if (isColumnGroup(child)) {
       childs = childs.concat(flattenColumns(child.props.children));
     } else {
       childs.push(child);
     }
   });
-  return childs;
+  return childs.filter(function (c) {
+    return !!c;
+  });
 }
 
 function findColumn(columns, id) {
-  var found = React.Children.toArray(columns).find(function (column) {
+  var found = getColumns(columns).find(function (column) {
     return column.props.id === id;
   });
   if (found) return found;

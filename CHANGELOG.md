@@ -1,3 +1,10 @@
+## [1.3.3](https://github.com/ClearC2/c2-table/compare/v1.3.2...v1.3.3) (2019-03-15)
+
+
+### Bug Fixes
+
+* filter falsy children ([#10](https://github.com/ClearC2/c2-table/issues/10)) ([3111f75](https://github.com/ClearC2/c2-table/commit/3111f75))
+
 ## [1.3.2](https://github.com/ClearC2/c2-table/compare/v1.3.1...v1.3.2) (2019-02-07)
 
 
