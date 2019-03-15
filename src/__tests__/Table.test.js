@@ -417,3 +417,41 @@ test('can pass custom sort function', () => {
   expect(queryTd(2, 2)).toHaveTextContent('a')
   expect(queryTd(3, 2)).toHaveTextContent('b')
 })
+
+test('filters out falsy children', () => {
+  const data = [
+    {id: 123, foo: 'abc'},
+    {id: 456, foo: 'def'}
+  ]
+  const value = false
+  const {getByText, queryByText} = render((
+    <Table data={data} rowId='id' id={tableId}>
+      {value && (
+        <Column id='foo' />
+      )}
+      <Column id='id' />
+    </Table>
+  ))
+  getByText('123')
+  expect(queryByText('abc')).not.toBeInTheDocument()
+})
+
+test('filters out falsy sub children', () => {
+  const data = [
+    {id: 123, foo: 'abc'},
+    {id: 456, foo: 'def'}
+  ]
+  const value = false
+  const {getByText, queryByText} = render((
+    <Table data={data} rowId='id' id={tableId}>
+      <ColumnGroup id='id'>
+        {value && (
+          <Column id='foo' />
+        )}
+        <Column id='id' />
+      </ColumnGroup>
+    </Table>
+  ))
+  getByText('123')
+  expect(queryByText('abc')).not.toBeInTheDocument()
+})

@@ -63,7 +63,7 @@ class ColumnGroup extends Component {
     id: PropTypes.string.isRequired,
     /** Columns */
     children: PropTypes.arrayOf((propValue, key) => {
-      if (!isColumn(propValue[key])) {
+      if (propValue[key] && !isColumn(propValue[key])) {
         throw new Error('<ColumnGroup> can only have <Column>\'s as children. ')
       }
     }).isRequired,
@@ -84,11 +84,17 @@ class ColumnGroup extends Component {
 }
 
 function isColumnGroup (child) {
+  child = child || {}
   return areComponentsEqual(child.type, ColumnGroup)
 }
 
 function isColumn (child) {
+  child = child || {}
   return areComponentsEqual(child.type, Column)
+}
+
+function getColumns (children) {
+  return React.Children.toArray(children).filter(child => !!child)
 }
 
 const ColumnOrColumnGroup = function (props, propName) {
@@ -223,7 +229,7 @@ class Thead extends Component {
     return (
       <tr>
         {this.props.onExpand ? <th rowSpan={hasGroups ? 2 : 1} className={this.props.expandClassName} /> : null}
-        {React.Children.map(this.props.children, column => (
+        {getColumns(this.props.children).map(column => (
           <Header
             key={column.props.id}
             orderColumn={this.props.orderColumn}
@@ -251,9 +257,9 @@ class Thead extends Component {
   renderSecondRow () {
     return (
       <tr>
-        {React.Children.map(this.props.children, column => {
+        {getColumns(this.props.children).map(column => {
           if (!isColumnGroup(column)) return null
-          return React.Children.map(column.props.children, child => (
+          return getColumns(column.props.children).map(child => (
             <Header
               key={child.props.id}
               orderColumn={this.props.orderColumn}
@@ -289,7 +295,7 @@ class Thead extends Component {
 function flattenColumns (columns) {
   let childs = []
 
-  React.Children.forEach(columns, child => {
+  getColumns(columns).forEach(child => {
     if (isColumnGroup(child)) {
       childs = childs.concat(flattenColumns(child.props.children))
     } else {
@@ -297,11 +303,11 @@ function flattenColumns (columns) {
     }
   })
 
-  return childs
+  return childs.filter(c => !!c)
 }
 
 function findColumn (columns, id) {
-  const found = React.Children.toArray(columns).find(column => column.props.id === id)
+  const found = getColumns(columns).find(column => column.props.id === id)
   if (found) return found
   return flattenColumns(columns).find(column => column.props.id === id)
 }
