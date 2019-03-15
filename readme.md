@@ -1,4 +1,4 @@
-# c2-table
+# c2-table [![CircleCI](https://circleci.com/gh/ClearC2/c2-table.svg?style=svg)](https://circleci.com/gh/ClearC2/c2-table)
 
 A react table component that supports:
 
