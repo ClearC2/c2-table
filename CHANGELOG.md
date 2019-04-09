@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/ClearC2/c2-table/compare/v1.3.3...v2.0.0) (2019-04-09)
+
+
+### Features
+
+* change package name ([5607bab](https://github.com/ClearC2/c2-table/commit/5607bab))
+
+
+### BREAKING CHANGES
+
+* change package name to @clearc2/c2-table
+
 ## [1.3.3](https://github.com/ClearC2/c2-table/compare/v1.3.2...v1.3.3) (2019-03-15)
 
 
