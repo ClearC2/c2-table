@@ -1,4 +1,4 @@
-# c2-table [![CircleCI](https://circleci.com/gh/ClearC2/c2-table.svg?style=svg)](https://circleci.com/gh/ClearC2/c2-table)
+# @clearc2/c2-table [![CircleCI](https://circleci.com/gh/ClearC2/c2-table.svg?style=svg)](https://circleci.com/gh/ClearC2/c2-table)
 
 A react table component that supports:
 
@@ -8,15 +8,19 @@ A react table component that supports:
 
 ## Install
 
-```
-yarn add ClearC2/c2-table#^1.0.0
+```sh
+# for yarn
+yarn add @clearc2/c2-table
+
+# for npm
+npm install @clearc2/c2-table
 ```
 
 ## Usage
 
 ```jsx
 import React from 'react'
-import {Table, Column} from 'c2-table'
+import {Table, Column} from '@clearc2/c2-table'
 
 const data = [
   {id: 1, firstName: 'Mickey', lastName: 'Patton', role: 'President'},

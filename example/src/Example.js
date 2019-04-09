@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
 import {hot} from 'react-hot-loader'
-import {Table, Column, ColumnGroup} from 'c2-table'
+import {Table, Column, ColumnGroup} from '@clearc2/c2-table'
 
 class FooBar extends Component {
   static propTypes = {row: PropTypes.object}
