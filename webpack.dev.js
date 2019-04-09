@@ -13,11 +13,11 @@ module.exports = merge(common, {
   devServer: {
     contentBase: path.join(__dirname, 'example', 'dist'),
     historyApiFallback: true,
-    port: 8081
+    port: 8082
   },
   resolve: {
     alias: {
-      'c2-table': path.join(__dirname, 'src')
+      '@clearc2/c2-table': path.join(__dirname, 'src')
     }
   }
 })
