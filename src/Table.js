@@ -339,17 +339,17 @@ class Tbody extends Component {
     this.state = {expanded}
   }
 
-  cellClassName (column, row) {
+  cellClassName (column, row, index) {
     if (typeof (column.props.cellClassName) === 'function') {
-      return column.props.cellClassName(row)
+      return column.props.cellClassName(row, index)
     }
 
     return column.props.cellClassName
   }
 
-  expandCell (row) {
+  expandCell (row, index) {
     const {rowId, expandClassName, clickableClass, collapsedIcon, expandedIcon} = this.props
-    const id = getRowId(rowId, row)
+    const id = getRowId(rowId, row, index)
     const onClick = () => {
       const expanded = this.state.expanded
       expanded[id] = !expanded[id]
@@ -363,10 +363,10 @@ class Tbody extends Component {
       </td>
     )
   }
-  getRowClassName = row => {
+  getRowClassName = (row, index) => {
     const {rowClassName} = this.props
     if (typeof (rowClassName) === 'string') return rowClassName
-    if (typeof (rowClassName) === 'function') return rowClassName(row)
+    if (typeof (rowClassName) === 'function') return rowClassName(row, index)
     return ''
   }
 
@@ -378,14 +378,14 @@ class Tbody extends Component {
     let rows = []
 
     data.forEach((row, index) => {
-      const rowClassName = this.getRowClassName(row)
-      const id = getRowId(rowId, row)
+      const rowClassName = this.getRowClassName(row, index)
+      const id = getRowId(rowId, row, index)
       const rId = `${tableId}-${id}`
       rows.push(
         <tr key={`tr-${rId}`} id={`tr-${rId}`} className={rowClassName}>
-          {onExpand ? this.expandCell(row) : null}
+          {onExpand ? this.expandCell(row, index) : null}
           {columns.map(column => (
-            <td key={`td-${rId}-${column.props.id}`} className={this.cellClassName(column, row)}>
+            <td key={`td-${rId}-${column.props.id}`} className={this.cellClassName(column, row, index)}>
               {tdContent(column, row, index)}
             </td>
           ))}
@@ -420,10 +420,10 @@ class Tbody extends Component {
   }
 }
 
-function getRowId (rowId, row) {
+function getRowId (rowId, row, index) {
   switch (typeof (rowId)) {
     case 'function':
-      return rowId(row)
+      return rowId(row, index)
     default:
       return row[rowId]
   }
