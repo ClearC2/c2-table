@@ -455,3 +455,68 @@ test('filters out falsy sub children', () => {
   getByText('123')
   expect(queryByText('abc')).not.toBeInTheDocument()
 })
+
+test('row index is passed to rowId', () => {
+  const data = [
+    {id: 123, foo: 'abc'},
+    {id: 456, foo: 'def'}
+  ]
+  const {container} = render((
+    <Table
+      data={data}
+      rowId={(row, i) => `foobar-${i}`}
+      id={tableId}
+      rowClassName={(row, i) => `row-class-${i}`}
+    >
+      <Column id='id' />
+    </Table>
+  ))
+  expect(container.querySelector(`#tr-${tableId}-foobar-0`)).toBeInTheDocument()
+  expect(container.querySelector(`#tr-${tableId}-foobar-1`)).toBeInTheDocument()
+  expect(container.querySelector('.row-class-0')).toBeInTheDocument()
+  expect(container.querySelector('.row-class-1')).toBeInTheDocument()
+})
+
+test('row index is passed to cell', () => {
+  const data = [
+    {id: 123, foo: 'abc'},
+    {id: 456, foo: 'def'}
+  ]
+  const {getByText} = render((
+    <Table
+      data={data}
+      rowId='id'
+      id={tableId}
+      rowClassName={(row, i) => `row-class-${i}`}
+    >
+      <Column
+        id='id'
+        cell={(row, index) => `cell-${index}`}
+      />
+    </Table>
+  ))
+  getByText('cell-0')
+  getByText('cell-1')
+})
+
+test('row index is passed to cellClassName', () => {
+  const data = [
+    {id: 123, foo: 'abc'},
+    {id: 456, foo: 'def'}
+  ]
+  const {container} = render((
+    <Table
+      data={data}
+      rowId='id'
+      id={tableId}
+      rowClassName={(row, i) => `row-class-${i}`}
+    >
+      <Column
+        id='id'
+        cellClassName={(row, index) => `cell-${index}`}
+      />
+    </Table>
+  ))
+  expect(container.querySelector('.cell-0')).toBeInTheDocument()
+  expect(container.querySelector('.cell-1')).toBeInTheDocument()
+})
