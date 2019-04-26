@@ -412,10 +412,10 @@ function (_Component5) {
 
     _this4 = _possibleConstructorReturn(this, _getPrototypeOf(Tbody).call(this, props));
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this4)), "getRowClassName", function (row) {
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this4)), "getRowClassName", function (row, index) {
       var rowClassName = _this4.props.rowClassName;
       if (typeof rowClassName === 'string') return rowClassName;
-      if (typeof rowClassName === 'function') return rowClassName(row);
+      if (typeof rowClassName === 'function') return rowClassName(row, index);
       return '';
     });
 
@@ -435,16 +435,16 @@ function (_Component5) {
 
   _createClass(Tbody, [{
     key: "cellClassName",
-    value: function cellClassName(column, row) {
+    value: function cellClassName(column, row, index) {
       if (typeof column.props.cellClassName === 'function') {
-        return column.props.cellClassName(row);
+        return column.props.cellClassName(row, index);
       }
 
       return column.props.cellClassName;
     }
   }, {
     key: "expandCell",
-    value: function expandCell(row) {
+    value: function expandCell(row, index) {
       var _this5 = this;
 
       var _this$props2 = this.props,
@@ -453,7 +453,7 @@ function (_Component5) {
           clickableClass = _this$props2.clickableClass,
           collapsedIcon = _this$props2.collapsedIcon,
           expandedIcon = _this$props2.expandedIcon;
-      var id = getRowId(rowId, row);
+      var id = getRowId(rowId, row, index);
 
       var onClick = function onClick() {
         var expanded = _this5.state.expanded;
@@ -484,18 +484,18 @@ function (_Component5) {
       var data = this.props.data || [];
       var rows = [];
       data.forEach(function (row, index) {
-        var rowClassName = _this6.getRowClassName(row);
+        var rowClassName = _this6.getRowClassName(row, index);
 
-        var id = getRowId(rowId, row);
+        var id = getRowId(rowId, row, index);
         var rId = "".concat(tableId, "-").concat(id);
         rows.push(React.createElement("tr", {
           key: "tr-".concat(rId),
           id: "tr-".concat(rId),
           className: rowClassName
-        }, onExpand ? _this6.expandCell(row) : null, columns.map(function (column) {
+        }, onExpand ? _this6.expandCell(row, index) : null, columns.map(function (column) {
           return React.createElement("td", {
             key: "td-".concat(rId, "-").concat(column.props.id),
-            className: _this6.cellClassName(column, row)
+            className: _this6.cellClassName(column, row, index)
           }, tdContent(column, row, index));
         })));
 
@@ -543,10 +543,10 @@ _defineProperty(Tbody, "propTypes", {
   rowClassName: StringOrFunc
 });
 
-function getRowId(rowId, row) {
+function getRowId(rowId, row, index) {
   switch (_typeof(rowId)) {
     case 'function':
-      return rowId(row);
+      return rowId(row, index);
 
     default:
       return row[rowId];

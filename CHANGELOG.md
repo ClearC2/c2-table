@@ -1,3 +1,10 @@
+# [2.1.0](https://github.com/ClearC2/c2-table/compare/v2.0.0...v2.1.0) (2019-04-26)
+
+
+### Features
+
+* add row index to rowId, rowClassName, cell, and cellClassName ([828c4e7](https://github.com/ClearC2/c2-table/commit/828c4e7))
+
 # [2.0.0](https://github.com/ClearC2/c2-table/compare/v1.3.3...v2.0.0) (2019-04-09)
 
 
