@@ -520,3 +520,58 @@ test('row index is passed to cellClassName', () => {
   expect(container.querySelector('.cell-0')).toBeInTheDocument()
   expect(container.querySelector('.cell-1')).toBeInTheDocument()
 })
+
+test('full length row', () => {
+  const data = [
+    {category: 'a'},
+    {id: 123, foo: 'abc'},
+    {category: 'b'},
+    {id: 456, foo: 'def'},
+    {id: 789, foo: 'ghi'}
+  ]
+
+  const {getByText} = render((
+    <Table
+      data={data}
+      rowId={row => row.category ? row.category : row.id}
+      id={tableId}
+      rowClassName={(row, i) => `row-class-${i}`}
+      isFullLength={row => !!row.category}
+      fullLengthCell={(row) => row.category}
+    >
+      <Column id='id' />
+      <Column id='foo' />
+    </Table>
+  ))
+  expect(getByText('a').getAttribute('colSpan')).toBe('2')
+  expect(getByText('b').getAttribute('colSpan')).toBe('2')
+  expect(getByText('123').getAttribute('colSpan')).toBe(null)
+})
+
+test('full length row with expand', () => {
+  const data = [
+    {category: 'a'},
+    {id: 123, foo: 'abc'},
+    {category: 'b'},
+    {id: 456, foo: 'def'},
+    {id: 789, foo: 'ghi'}
+  ]
+
+  const {getByText} = render((
+    <Table
+      data={data}
+      rowId={row => row.category ? row.category : row.id}
+      id={tableId}
+      rowClassName={(row, i) => `row-class-${i}`}
+      isFullLength={row => !!row.category}
+      fullLengthCell={(row) => row.category}
+      onExpand={() => <div>expanded</div>}
+    >
+      <Column id='id' />
+      <Column id='foo' />
+    </Table>
+  ))
+  expect(getByText('a').getAttribute('colSpan')).toBe('3')
+  expect(getByText('b').getAttribute('colSpan')).toBe('3')
+  expect(getByText('123').getAttribute('colSpan')).toBe(null)
+})

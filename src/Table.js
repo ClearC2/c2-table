@@ -325,7 +325,9 @@ class Tbody extends Component {
     collapsedIcon: PropTypes.any,
     expanded: PropTypes.array,
     onEmpty: PropTypes.node,
-    rowClassName: StringOrFunc
+    rowClassName: StringOrFunc,
+    isFullLength: PropTypes.func,
+    fullLengthCell: PropTypes.func
   }
 
   constructor (props) {
@@ -371,7 +373,7 @@ class Tbody extends Component {
   }
 
   render () {
-    const {children, rowId, onExpand, onEmpty} = this.props
+    const {children, rowId, onExpand, onEmpty, isFullLength, fullLengthCell} = this.props
     const tableId = this.props.id
     const columns = flattenColumns(children)
     const data = this.props.data || []
@@ -381,16 +383,26 @@ class Tbody extends Component {
       const rowClassName = this.getRowClassName(row, index)
       const id = getRowId(rowId, row, index)
       const rId = `${tableId}-${id}`
-      rows.push(
-        <tr key={`tr-${rId}`} id={`tr-${rId}`} className={rowClassName}>
-          {onExpand ? this.expandCell(row, index) : null}
-          {columns.map(column => (
-            <td key={`td-${rId}-${column.props.id}`} className={this.cellClassName(column, row, index)}>
-              {tdContent(column, row, index)}
+      if (isFullLength && isFullLength(row, index)) {
+        rows.push((
+          <tr key={`tr-${rId}`} id={`tr-${rId}`} className={rowClassName}>
+            <td colSpan={columns.length + (onExpand ? 1 : 0)}>
+              {fullLengthCell(row, index)}
             </td>
-          ))}
-        </tr>
-      )
+          </tr>
+        ))
+      } else {
+        rows.push(
+          <tr key={`tr-${rId}`} id={`tr-${rId}`} className={rowClassName}>
+            {onExpand ? this.expandCell(row, index) : null}
+            {columns.map(column => (
+              <td key={`td-${rId}-${column.props.id}`} className={this.cellClassName(column, row, index)}>
+                {tdContent(column, row, index)}
+              </td>
+            ))}
+          </tr>
+        )
+      }
       if (onExpand && this.state.expanded[id]) {
         rows.push(
           <tr key={`tr-${rId}-expanded`} className={`${rowClassName}-expanded`}>
@@ -459,6 +471,8 @@ class Table extends Component {
     defaultOrderColumn: PropTypes.string,
     /** The default column direction */
     defaultOrderDir: PropTypes.oneOf(['asc', 'desc']),
+    /** If sorting should be enabled */
+    sortEnabled: PropTypes.bool,
     /** Columns/ColumnGroups */
     children: ColumnOrColumnGroup,
     /** Style object */
@@ -490,8 +504,17 @@ class Table extends Component {
     /** Icon to show when column is asc sorted */
     sortAscIcon: PropTypes.any,
     /** Function that is called on sort, (columnId, dir) => {}  */
-    onSort: PropTypes.func
+    onSort: PropTypes.func,
+    /** Function that receives the row object and should bool for is full length */
+    isFullLength: PropTypes.func,
+    /** Full length cell renderer */
+    fullLengthCell: PropTypes.func
   }
+
+  static defaultProps = {
+    sortEnabled: true
+  }
+
   state = {}
 
   componentDidMount () {
@@ -503,10 +526,12 @@ class Table extends Component {
   }
 
   setOrderColumn = (column) => {
+    if (!this.props.sortEnabled) return
     this.setState({orderColumn: column})
   }
 
   setOrderDir = (dir = 'desc') => {
+    if (!this.props.sortEnabled) return
     this.setState({orderDir: dir})
   }
 
@@ -568,7 +593,7 @@ class Table extends Component {
           children={this.props.children}
           onExpand={this.props.onExpand}
           expandClassName={this.props.expandClassName}
-          clickableClass={this.props.clickableClass}
+          clickableClass={this.props.sortEnabled ? this.props.clickableClass : 'c2-table-disabled'}
           sortDescIcon={this.props.sortDescIcon}
           sortAscIcon={this.props.sortAscIcon}
           onSort={this.props.onSort}
@@ -585,6 +610,8 @@ class Table extends Component {
           expanded={this.props.expanded}
           onEmpty={this.props.onEmpty}
           rowClassName={this.props.rowClassName}
+          isFullLength={this.props.isFullLength}
+          fullLengthCell={this.props.fullLengthCell}
           data={pagedData}
         />
         <Tfoot
