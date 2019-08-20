@@ -1,3 +1,10 @@
+# [2.2.0](https://github.com/ClearC2/c2-table/compare/v2.1.0...v2.2.0) (2019-08-20)
+
+
+### Features
+
+* add arbitrary full length row support ([b683fe7](https://github.com/ClearC2/c2-table/commit/b683fe7))
+
 # [2.1.0](https://github.com/ClearC2/c2-table/compare/v2.0.0...v2.1.0) (2019-04-26)
 
 

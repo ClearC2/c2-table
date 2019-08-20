@@ -502,7 +502,9 @@ function (_Component5) {
           children = _this$props3.children,
           rowId = _this$props3.rowId,
           onExpand = _this$props3.onExpand,
-          onEmpty = _this$props3.onEmpty;
+          onEmpty = _this$props3.onEmpty,
+          isFullLength = _this$props3.isFullLength,
+          fullLengthCell = _this$props3.fullLengthCell;
       var tableId = this.props.id;
       var columns = flattenColumns(children);
       var data = this.props.data || [];
@@ -512,16 +514,27 @@ function (_Component5) {
 
         var id = getRowId(rowId, row, index);
         var rId = "".concat(tableId, "-").concat(id);
-        rows.push(_react.default.createElement("tr", {
-          key: "tr-".concat(rId),
-          id: "tr-".concat(rId),
-          className: rowClassName
-        }, onExpand ? _this6.expandCell(row, index) : null, columns.map(function (column) {
-          return _react.default.createElement("td", {
-            key: "td-".concat(rId, "-").concat(column.props.id),
-            className: _this6.cellClassName(column, row, index)
-          }, tdContent(column, row, index));
-        })));
+
+        if (isFullLength && isFullLength(row, index)) {
+          rows.push(_react.default.createElement("tr", {
+            key: "tr-".concat(rId),
+            id: "tr-".concat(rId),
+            className: rowClassName
+          }, _react.default.createElement("td", {
+            colSpan: columns.length + (onExpand ? 1 : 0)
+          }, fullLengthCell(row, index))));
+        } else {
+          rows.push(_react.default.createElement("tr", {
+            key: "tr-".concat(rId),
+            id: "tr-".concat(rId),
+            className: rowClassName
+          }, onExpand ? _this6.expandCell(row, index) : null, columns.map(function (column) {
+            return _react.default.createElement("td", {
+              key: "td-".concat(rId, "-").concat(column.props.id),
+              className: _this6.cellClassName(column, row, index)
+            }, tdContent(column, row, index));
+          })));
+        }
 
         if (onExpand && _this6.state.expanded[id]) {
           rows.push(_react.default.createElement("tr", {
@@ -564,7 +577,9 @@ _defineProperty(Tbody, "propTypes", {
   collapsedIcon: _propTypes.default.any,
   expanded: _propTypes.default.array,
   onEmpty: _propTypes.default.node,
-  rowClassName: StringOrFunc
+  rowClassName: StringOrFunc,
+  isFullLength: _propTypes.default.func,
+  fullLengthCell: _propTypes.default.func
 });
 
 function getRowId(rowId, row, index) {
@@ -618,6 +633,8 @@ function (_Component6) {
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this7)), "state", {});
 
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this7)), "setOrderColumn", function (column) {
+      if (!_this7.props.sortEnabled) return;
+
       _this7.setState({
         orderColumn: column
       });
@@ -625,6 +642,7 @@ function (_Component6) {
 
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this7)), "setOrderDir", function () {
       var dir = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'desc';
+      if (!_this7.props.sortEnabled) return;
 
       _this7.setState({
         orderDir: dir
@@ -713,7 +731,7 @@ function (_Component6) {
         children: this.props.children,
         onExpand: this.props.onExpand,
         expandClassName: this.props.expandClassName,
-        clickableClass: this.props.clickableClass,
+        clickableClass: this.props.sortEnabled ? this.props.clickableClass : 'c2-table-disabled',
         sortDescIcon: this.props.sortDescIcon,
         sortAscIcon: this.props.sortAscIcon,
         onSort: this.props.onSort
@@ -729,6 +747,8 @@ function (_Component6) {
         expanded: this.props.expanded,
         onEmpty: this.props.onEmpty,
         rowClassName: this.props.rowClassName,
+        isFullLength: this.props.isFullLength,
+        fullLengthCell: this.props.fullLengthCell,
         data: pagedData
       }), _react.default.createElement(Tfoot, {
         children: this.props.children,
@@ -758,6 +778,9 @@ _defineProperty(Table, "propTypes", {
 
   /** The default column direction */
   defaultOrderDir: _propTypes.default.oneOf(['asc', 'desc']),
+
+  /** If sorting should be enabled */
+  sortEnabled: _propTypes.default.bool,
 
   /** Columns/ColumnGroups */
   children: ColumnOrColumnGroup,
@@ -805,7 +828,17 @@ _defineProperty(Table, "propTypes", {
   sortAscIcon: _propTypes.default.any,
 
   /** Function that is called on sort, (columnId, dir) => {}  */
-  onSort: _propTypes.default.func
+  onSort: _propTypes.default.func,
+
+  /** Function that receives the row object and should bool for is full length */
+  isFullLength: _propTypes.default.func,
+
+  /** Full length cell renderer */
+  fullLengthCell: _propTypes.default.func
+});
+
+_defineProperty(Table, "defaultProps", {
+  sortEnabled: true
 });
 
 var Tfoot =
