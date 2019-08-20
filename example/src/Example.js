@@ -12,7 +12,9 @@ class FooBar extends Component {
 }
 
 const data = [
+  {category: 'AAA'},
   {foo: 'a', baz: 4, bar: 123, bam: 'abc', bama: 1},
+  {category: 'BBB'},
   {foo: 'b', baz: 6, bar: 456, bam: 'def', bama: 2},
   {foo: 'c', baz: 1, bar: 789, bam: 'ghi', bama: 3}
 ]
@@ -28,9 +30,10 @@ function App () {
             className='table table-bordered'
             style={{marginTop: '100px'}}
             data={data}
-            rowId={row => row.foo}
+            rowId={row => row.category || row.foo}
             defaultOrderColumn='bar'
             defaultOrderDir='desc'
+            sortEnabled={false}
             expandClassName='fit text-center'
             onExpand={FooBar}
             onEmpty={(
@@ -38,6 +41,8 @@ function App () {
             )}
             onSort={(column, dir) => console.log(column, dir)}
             rowClassName={row => row.bar > 200 ? 'high' : 'low'}
+            isFullLength={row => !!row.category}
+            fullLengthCell={row => row.category}
           >
             <Column id='foo' headerClassName='col-xs-2' cellClassName={row => row.bam} footerClassName='foo-footer' />
             <Column id='bar' headerClassName='col-xs-2' />
