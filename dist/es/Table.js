@@ -416,7 +416,7 @@ function findColumn(columns, id) {
   });
 }
 
-function Row(_ref) {
+function _Row(_ref) {
   var rowId = _ref.rowId,
       row = _ref.row,
       index = _ref.index,
@@ -447,6 +447,8 @@ function Row(_ref) {
     value: value
   }, React.createElement("tr", props, children));
 }
+
+var Row = React.memo(_Row);
 
 var Tbody =
 /*#__PURE__*/

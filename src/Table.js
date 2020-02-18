@@ -326,7 +326,7 @@ function findColumn (columns, id) {
   return flattenColumns(columns).find(column => column.props.id === id)
 }
 
-function Row ({rowId, row, index, expanded, setExpanded, children, ...props}) { // eslint-disable-line
+function _Row ({rowId, row, index, expanded, setExpanded, children, ...props}) { // eslint-disable-line
   const value = React.useMemo(() => {
     return {
       rowId,
@@ -346,6 +346,8 @@ function Row ({rowId, row, index, expanded, setExpanded, children, ...props}) { 
     </RowContext.Provider>
   )
 }
+
+const Row = React.memo(_Row)
 
 class Tbody extends Component {
   static propTypes = {
