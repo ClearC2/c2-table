@@ -21,5 +21,11 @@ Object.defineProperty(exports, "ColumnGroup", {
     return _Table.ColumnGroup;
   }
 });
+Object.defineProperty(exports, "RowContext", {
+  enumerable: true,
+  get: function get() {
+    return _Table.RowContext;
+  }
+});
 
 var _Table = require("./Table");

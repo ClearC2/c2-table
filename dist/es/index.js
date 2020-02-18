@@ -1,2 +1,2 @@
-import { Table, Column, ColumnGroup } from './Table';
-export { Table, Column, ColumnGroup };
+import { Table, Column, ColumnGroup, RowContext } from './Table';
+export { Table, Column, ColumnGroup, RowContext };

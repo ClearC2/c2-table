@@ -1,3 +1,9 @@
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
+
+function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -161,6 +167,16 @@ var ColumnOrColumnGroup = function ColumnOrColumnGroup(props, propName) {
     return error;
   });
 };
+
+var RowContext = React.createContext({
+  row: null,
+  index: null,
+  rowId: null,
+  expanded: null,
+  expand: function expand() {},
+  collapse: function collapse() {},
+  toggleExpanded: function toggleExpanded() {}
+});
 
 var Header =
 /*#__PURE__*/
@@ -400,6 +416,38 @@ function findColumn(columns, id) {
   });
 }
 
+function Row(_ref) {
+  var rowId = _ref.rowId,
+      row = _ref.row,
+      index = _ref.index,
+      expanded = _ref.expanded,
+      setExpanded = _ref.setExpanded,
+      children = _ref.children,
+      props = _objectWithoutProperties(_ref, ["rowId", "row", "index", "expanded", "setExpanded", "children"]);
+
+  // eslint-disable-line
+  var value = React.useMemo(function () {
+    return {
+      rowId: rowId,
+      row: row,
+      index: index,
+      expanded: expanded,
+      toggleExpanded: function toggleExpanded() {
+        return setExpanded(rowId, !expanded);
+      },
+      expand: function expand() {
+        return setExpanded(rowId, true);
+      },
+      collapse: function collapse() {
+        return setExpanded(rowId, false);
+      }
+    };
+  }, [rowId, row, index, expanded, setExpanded]);
+  return React.createElement(RowContext.Provider, {
+    value: value
+  }, React.createElement("tr", props, children));
+}
+
 var Tbody =
 /*#__PURE__*/
 function (_Component5) {
@@ -412,6 +460,12 @@ function (_Component5) {
 
     _this4 = _possibleConstructorReturn(this, _getPrototypeOf(Tbody).call(this, props));
 
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this4)), "setExpanded", function (rowId, expanded) {
+      _this4.setState({
+        expanded: _objectSpread({}, _this4.state.expanded, _defineProperty({}, rowId, expanded))
+      });
+    });
+
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this4)), "getRowClassName", function (row, index) {
       var rowClassName = _this4.props.rowClassName;
       if (typeof rowClassName === 'string') return rowClassName;
@@ -419,16 +473,16 @@ function (_Component5) {
       return '';
     });
 
-    var expanded = {};
+    var _expanded = {};
 
     if (props.expanded) {
       props.expanded.forEach(function (rowId) {
-        expanded[rowId] = true;
+        _expanded[rowId] = true;
       });
     }
 
     _this4.state = {
-      expanded: expanded
+      expanded: _expanded
     };
     return _this4;
   }
@@ -490,19 +544,30 @@ function (_Component5) {
 
         var id = getRowId(rowId, row, index);
         var rId = "".concat(tableId, "-").concat(id);
+        var expanded = _this6.state.expanded[id] || false;
 
         if (isFullLength && isFullLength(row, index)) {
-          rows.push(React.createElement("tr", {
+          rows.push(React.createElement(Row, {
             key: "tr-".concat(rId),
             id: "tr-".concat(rId),
+            rowId: id,
+            row: row,
+            index: index,
+            expanded: expanded,
+            setExpanded: _this6.setExpanded,
             className: rowClassName
           }, React.createElement("td", {
             colSpan: columns.length + (onExpand ? 1 : 0)
           }, fullLengthCell(row, index))));
         } else {
-          rows.push(React.createElement("tr", {
+          rows.push(React.createElement(Row, {
             key: "tr-".concat(rId),
             id: "tr-".concat(rId),
+            rowId: id,
+            row: row,
+            index: index,
+            expanded: expanded,
+            setExpanded: _this6.setExpanded,
             className: rowClassName
           }, onExpand ? _this6.expandCell(row, index) : null, columns.map(function (column) {
             return React.createElement("td", {
@@ -513,8 +578,13 @@ function (_Component5) {
         }
 
         if (onExpand && _this6.state.expanded[id]) {
-          rows.push(React.createElement("tr", {
+          rows.push(React.createElement(Row, {
             key: "tr-".concat(rId, "-expanded"),
+            rowId: id,
+            row: row,
+            index: index,
+            expanded: expanded,
+            setExpanded: _this6.setExpanded,
             className: "".concat(rowClassName, "-expanded")
           }, React.createElement("td", {
             colSpan: columns.length + 1
@@ -859,4 +929,4 @@ _defineProperty(Tfoot, "propTypes", {
   data: PropTypes.array
 });
 
-export { Table, Column, ColumnGroup };
+export { Table, Column, ColumnGroup, RowContext };
