@@ -4,7 +4,7 @@ route: /
 order: 2
 ---
 
-import { Playground, PropsTable } from 'docz'
+import { Playground } from 'docz'
 import {Table, Column, ColumnGroup, RowContext} from '../src'
 
 # c2-table
@@ -118,10 +118,12 @@ Use `RowContext` to access the following row attributes:
 <Playground>
     {() => {
         // import {Table, Column, RowContext} from '@clearc2/c2-table'
-        const Cell = () => {
+        const Button = () => {
           const {expanded, toggleExpanded} = React.useContext(RowContext)
           return (
-            <button onClick={toggleExpanded}>{expanded ? 'Collapse' : 'Expand'}</button>
+            <button onClick={toggleExpanded}>
+              {expanded ? 'Hide' : 'Show'} Role
+            </button>
           )
         }
         const data = [
@@ -135,7 +137,9 @@ Use `RowContext` to access the following row attributes:
             data={data}
             onExpand={({row}) => <span>{row.role.toUpperCase()}</span>}
            >
-            <Column id='id' header='ID' cell={() => <Cell />}/>
+            <Column id='id' header='ID' />
+            <Column id='name' header='Name' />
+            <Column id='action' header=' ' cell={() => <Button />}/>
           </Table>
         )
     }}
