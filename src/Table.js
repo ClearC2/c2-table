@@ -22,6 +22,7 @@ const StringObjectOrFunc = PropTypes.oneOfType([
 
 class Column extends Component {
   static _colType = 'c2-table-column'
+
   static propTypes = {
     /** Unique column id */
     id: PropTypes.string.isRequired,
@@ -47,6 +48,7 @@ class Column extends Component {
     /** Custom sort function: (data, orderDir) => data */
     sort: PropTypes.func
   }
+
   static defaultProps = {
     sortOnHeaderClick: true
   }
@@ -58,6 +60,7 @@ class Column extends Component {
 
 class ColumnGroup extends Component {
   static _colType = 'c2-table-column-group'
+
   static propTypes = {
     /** Unique column id */
     id: PropTypes.string.isRequired,
@@ -74,6 +77,7 @@ class ColumnGroup extends Component {
     /** Custom sort function: (data, orderDir) => data */
     sort: PropTypes.func
   }
+
   static defaultProps = {
     sortOnHeaderClick: true
   }
@@ -107,6 +111,16 @@ const ColumnOrColumnGroup = function (props, propName) {
     return error
   })
 }
+
+const RowContext = React.createContext({
+  row: null,
+  index: null,
+  rowId: null,
+  expanded: null,
+  expand: () => {},
+  collapse: () => {},
+  toggleExpanded: () => {}
+})
 
 class Header extends Component {
   static propTypes = {
@@ -312,6 +326,27 @@ function findColumn (columns, id) {
   return flattenColumns(columns).find(column => column.props.id === id)
 }
 
+function Row ({rowId, row, index, expanded, setExpanded, children, ...props}) { // eslint-disable-line
+  const value = React.useMemo(() => {
+    return {
+      rowId,
+      row,
+      index,
+      expanded,
+      toggleExpanded: () => setExpanded(rowId, !expanded),
+      expand: () => setExpanded(rowId, true),
+      collapse: () => setExpanded(rowId, false)
+    }
+  }, [rowId, row, index, expanded, setExpanded])
+  return (
+    <RowContext.Provider value={value}>
+      <tr {...props}>
+        {children}
+      </tr>
+    </RowContext.Provider>
+  )
+}
+
 class Tbody extends Component {
   static propTypes = {
     rowId: StringOrFunc.isRequired,
@@ -341,6 +376,15 @@ class Tbody extends Component {
     this.state = {expanded}
   }
 
+  setExpanded = (rowId, expanded) => {
+    this.setState({
+      expanded: {
+        ...this.state.expanded,
+        [rowId]: expanded
+      }
+    })
+  }
+
   cellClassName (column, row, index) {
     if (typeof (column.props.cellClassName) === 'function') {
       return column.props.cellClassName(row, index)
@@ -365,6 +409,7 @@ class Tbody extends Component {
       </td>
     )
   }
+
   getRowClassName = (row, index) => {
     const {rowClassName} = this.props
     if (typeof (rowClassName) === 'string') return rowClassName
@@ -377,39 +422,66 @@ class Tbody extends Component {
     const tableId = this.props.id
     const columns = flattenColumns(children)
     const data = this.props.data || []
-    let rows = []
+    const rows = []
 
     data.forEach((row, index) => {
       const rowClassName = this.getRowClassName(row, index)
       const id = getRowId(rowId, row, index)
       const rId = `${tableId}-${id}`
+      const expanded = this.state.expanded[id] || false
       if (isFullLength && isFullLength(row, index)) {
         rows.push((
-          <tr key={`tr-${rId}`} id={`tr-${rId}`} className={rowClassName}>
+          <Row
+            key={`tr-${rId}`}
+            id={`tr-${rId}`}
+            rowId={id}
+            row={row}
+            index={index}
+            expanded={expanded}
+            setExpanded={this.setExpanded}
+            className={rowClassName}
+          >
             <td colSpan={columns.length + (onExpand ? 1 : 0)}>
               {fullLengthCell(row, index)}
             </td>
-          </tr>
+          </Row>
         ))
       } else {
         rows.push(
-          <tr key={`tr-${rId}`} id={`tr-${rId}`} className={rowClassName}>
+          <Row
+            key={`tr-${rId}`}
+            id={`tr-${rId}`}
+            rowId={id}
+            row={row}
+            index={index}
+            expanded={expanded}
+            setExpanded={this.setExpanded}
+            className={rowClassName}
+          >
             {onExpand ? this.expandCell(row, index) : null}
             {columns.map(column => (
               <td key={`td-${rId}-${column.props.id}`} className={this.cellClassName(column, row, index)}>
                 {tdContent(column, row, index)}
               </td>
             ))}
-          </tr>
+          </Row>
         )
       }
       if (onExpand && this.state.expanded[id]) {
         rows.push(
-          <tr key={`tr-${rId}-expanded`} className={`${rowClassName}-expanded`}>
+          <Row
+            key={`tr-${rId}-expanded`}
+            rowId={id}
+            row={row}
+            index={index}
+            expanded={expanded}
+            setExpanded={this.setExpanded}
+            className={`${rowClassName}-expanded`}
+          >
             <td colSpan={columns.length + 1}>
               {React.createElement(onExpand, {row})}
             </td>
-          </tr>
+          </Row>
         )
       }
     })
@@ -626,6 +698,7 @@ class Table extends Component {
 
 class Tfoot extends Component {
   static defaultProps = {data: []}
+
   static propTypes = {
     children: PropTypes.node,
     onExpand: PropTypes.func,
@@ -659,5 +732,6 @@ class Tfoot extends Component {
 export {
   Table,
   Column,
-  ColumnGroup
+  ColumnGroup,
+  RowContext
 }

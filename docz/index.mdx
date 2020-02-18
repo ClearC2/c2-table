@@ -5,7 +5,7 @@ order: 2
 ---
 
 import { Playground, PropsTable } from 'docz'
-import {Table, Column, ColumnGroup} from '../src'
+import {Table, Column, ColumnGroup, RowContext} from '../src'
 
 # c2-table
 
@@ -102,3 +102,42 @@ npm install @clearc2/c2-table
         )
     }}
 </Playground>
+
+## Using RowContext
+
+Use `RowContext` to access the following row attributes:
+
+- `row` (object)
+- `index` (number)
+- `rowId` (string)
+- `expanded` (boolean)
+- `expand` (function)
+- `collapse` (function)
+- `toggleExpanded` (function)
+
+<Playground>
+    {() => {
+        // import {Table, Column, RowContext} from '@clearc2/c2-table'
+        const Cell = () => {
+          const {expanded, toggleExpanded} = React.useContext(RowContext)
+          return (
+            <button onClick={toggleExpanded}>{expanded ? 'Collapse' : 'Expand'}</button>
+          )
+        }
+        const data = [
+          {id: 1, name: 'Mickey Patton', role: 'President'},
+          {id: 2, name: 'Kevin Bull', role: 'Developer'}
+        ]
+        return (
+          <Table
+            id='test-table'
+            rowId='id'
+            data={data}
+            onExpand={({row}) => <span>{row.role.toUpperCase()}</span>}
+           >
+            <Column id='id' header='ID' cell={() => <Cell />}/>
+          </Table>
+        )
+    }}
+</Playground>
+
