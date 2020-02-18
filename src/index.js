@@ -1,7 +1,8 @@
-import {Table, Column, ColumnGroup} from './Table'
+import {Table, Column, ColumnGroup, RowContext} from './Table'
 
 export {
   Table,
   Column,
-  ColumnGroup
+  ColumnGroup,
+  RowContext
 }

@@ -1,6 +1,6 @@
 import React from 'react'
 import {render as rtlRender, fireEvent} from 'react-testing-library'
-import {Table, Column, ColumnGroup} from '../Table'
+import {Table, Column, ColumnGroup, RowContext} from '../Table'
 
 const tableId = 'test-table'
 
@@ -574,4 +574,78 @@ test('full length row with expand', () => {
   expect(getByText('a').getAttribute('colSpan')).toBe('3')
   expect(getByText('b').getAttribute('colSpan')).toBe('3')
   expect(getByText('123').getAttribute('colSpan')).toBe(null)
+})
+
+test('can use RowContext to expand and collapse', () => {
+  const data = [
+    {id: 1, foo: 'a'},
+    {id: 2, foo: 'b'},
+    {id: 3, foo: 'c'}
+  ]
+  function Cell () {
+    const context = React.useContext(RowContext)
+    return (
+      <React.Fragment>
+        <button onClick={context.expand}>expand</button>
+        <button onClick={context.collapse}>collapse</button>
+        <button onClick={context.toggleExpanded}>toggle</button>
+      </React.Fragment>
+    )
+  }
+
+  const {getByText, queryByText} = render((
+    <Table
+      data={data}
+      rowId='id'
+      id={tableId}
+      onExpand={({row}) => <span>{row.id}-{row.foo}</span>}
+    >
+      <Column
+        id='id'
+        cell={(props) => <Cell {...props} />}
+      />
+    </Table>
+  ))
+  expect(queryByText('1-a')).not.toBeInTheDocument()
+  fireEvent.click(getByText('expand'))
+  expect(queryByText('1-a')).toBeInTheDocument()
+  fireEvent.click(getByText('collapse'))
+  expect(queryByText('1-a')).not.toBeInTheDocument()
+  fireEvent.click(getByText('toggle'))
+  expect(queryByText('1-a')).toBeInTheDocument()
+  fireEvent.click(getByText('toggle'))
+  expect(queryByText('1-a')).not.toBeInTheDocument()
+})
+
+test('can use RowContext get data', () => {
+  const data = [
+    {id: 1, foo: 'a'},
+    {id: 2, foo: 'b'},
+    {id: 3, foo: 'c'}
+  ]
+  function Cell () {
+    const {row, index} = React.useContext(RowContext)
+    return (
+      <React.Fragment>
+        <span>{JSON.stringify(row)}</span>
+        <span>row-{index}</span>
+      </React.Fragment>
+    )
+  }
+
+  const {getByText} = render((
+    <Table
+      data={data}
+      rowId='id'
+      id={tableId}
+      onExpand={({row}) => <span>{row.id}-{row.foo}</span>}
+    >
+      <Column
+        id='id'
+        cell={() => <Cell />}
+      />
+    </Table>
+  ))
+  getByText(JSON.stringify(data[1]))
+  getByText('row-1')
 })

@@ -2,3 +2,5 @@ docs
 docz
 .circleci
 *.js
+src
+example
