@@ -4,6 +4,8 @@ import {areComponentsEqual} from 'react-hot-loader'
 
 const defaultClickableClass = 'clickable'
 
+const noop = () => {}
+
 const StringOrFunc = PropTypes.oneOfType([
   PropTypes.string,
   PropTypes.func
@@ -170,7 +172,6 @@ class Header extends Component {
   }
 
   onHeaderClick = () => {
-    if (this.props.sortOnHeaderClick === false && typeof this.props.header !== 'function') return
     const dir = this.props.orderDir === 'asc' || !this.props.orderDir ? 'desc' : 'asc'
     this.props.setOrderColumn(this.props.id)
     this.props.setOrderDir(dir)
@@ -188,7 +189,7 @@ class Header extends Component {
       <th
         colSpan={colSpan || 1}
         rowSpan={this.props.hasGroups && colSpan === 1 ? 2 : 1}
-        onClick={this.onHeaderClick}
+        onClick={this.props.sortOnHeaderClick === false ? noop : this.onHeaderClick}
         className={`${this.props.className || ''} ${this.getClickableClass()}`.trim()}
         data-testid={`header-${this.props.id}`}
       >
