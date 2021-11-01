@@ -1,3 +1,10 @@
+## [3.0.2](https://github.com/ClearC2/c2-table/compare/v3.0.1...v3.0.2) (2021-11-01)
+
+
+### Bug Fixes
+
+* **header:** fix sortOnHeaderClick ([c55e2a8](https://github.com/ClearC2/c2-table/commit/c55e2a8))
+
 ## [3.0.1](https://github.com/ClearC2/c2-table/compare/v3.0.0...v3.0.1) (2021-11-01)
 
 

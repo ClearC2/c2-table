@@ -28,6 +28,9 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { areComponentsEqual } from 'react-hot-loader';
 var defaultClickableClass = 'clickable';
+
+var noop = function noop() {};
+
 var StringOrFunc = PropTypes.oneOfType([PropTypes.string, PropTypes.func]);
 var StringOrObject = PropTypes.oneOfType([PropTypes.string, PropTypes.object]);
 var StringObjectOrFunc = PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.func]);
@@ -197,7 +200,6 @@ function (_Component3) {
     _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(Header)).call.apply(_getPrototypeOf2, [this].concat(args)));
 
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onHeaderClick", function () {
-      if (_this.props.sortOnHeaderClick === false && typeof _this.props.header !== 'function') return;
       var dir = _this.props.orderDir === 'asc' || !_this.props.orderDir ? 'desc' : 'asc';
 
       _this.props.setOrderColumn(_this.props.id);
@@ -246,7 +248,7 @@ function (_Component3) {
       return React.createElement("th", {
         colSpan: colSpan || 1,
         rowSpan: this.props.hasGroups && colSpan === 1 ? 2 : 1,
-        onClick: this.onHeaderClick,
+        onClick: this.props.sortOnHeaderClick === false ? noop : this.onHeaderClick,
         className: "".concat(this.props.className || '', " ").concat(this.getClickableClass()).trim(),
         "data-testid": "header-".concat(this.props.id)
       }, this.headerContent());

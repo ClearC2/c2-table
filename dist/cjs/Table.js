@@ -43,6 +43,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 var defaultClickableClass = 'clickable';
 
+var noop = function noop() {};
+
 var StringOrFunc = _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.func]);
 
 var StringOrObject = _propTypes.default.oneOfType([_propTypes.default.string, _propTypes.default.object]);
@@ -221,7 +223,6 @@ function (_Component3) {
     _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(Header)).call.apply(_getPrototypeOf2, [this].concat(args)));
 
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onHeaderClick", function () {
-      if (_this.props.sortOnHeaderClick === false && typeof _this.props.header !== 'function') return;
       var dir = _this.props.orderDir === 'asc' || !_this.props.orderDir ? 'desc' : 'asc';
 
       _this.props.setOrderColumn(_this.props.id);
@@ -270,7 +271,7 @@ function (_Component3) {
       return _react.default.createElement("th", {
         colSpan: colSpan || 1,
         rowSpan: this.props.hasGroups && colSpan === 1 ? 2 : 1,
-        onClick: this.onHeaderClick,
+        onClick: this.props.sortOnHeaderClick === false ? noop : this.onHeaderClick,
         className: "".concat(this.props.className || '', " ").concat(this.getClickableClass()).trim(),
         "data-testid": "header-".concat(this.props.id)
       }, this.headerContent());
