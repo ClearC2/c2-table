@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/ClearC2/c2-table/compare/v3.0.0...v3.0.1) (2021-11-01)
+
+
+### Bug Fixes
+
+* **header:** fix header on click fn ([40b8e77](https://github.com/ClearC2/c2-table/commit/40b8e77))
+
 # [3.0.0](https://github.com/ClearC2/c2-table/compare/v2.2.0...v3.0.0) (2020-02-18)
 
 

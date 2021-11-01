@@ -221,7 +221,7 @@ function (_Component3) {
     _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(Header)).call.apply(_getPrototypeOf2, [this].concat(args)));
 
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onHeaderClick", function () {
-      if (_this.props.sortOnHeaderClick === false) return;
+      if (_this.props.sortOnHeaderClick === false && typeof _this.props.header !== 'function') return;
       var dir = _this.props.orderDir === 'asc' || !_this.props.orderDir ? 'desc' : 'asc';
 
       _this.props.setOrderColumn(_this.props.id);
