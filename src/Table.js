@@ -170,7 +170,7 @@ class Header extends Component {
   }
 
   onHeaderClick = () => {
-    if (this.props.sortOnHeaderClick === false) return
+    if (this.props.sortOnHeaderClick === false && typeof this.props.header !== 'function') return
     const dir = this.props.orderDir === 'asc' || !this.props.orderDir ? 'desc' : 'asc'
     this.props.setOrderColumn(this.props.id)
     this.props.setOrderDir(dir)

@@ -24,7 +24,7 @@
     "build:docs": "rimraf docs && docz build",
     "cm": "git-cz",
     "semantic-release": "semantic-release",
-    "test": "jest",
+    "test": "jest src",
     "docz:dev": "docz dev"
   },
   "husky": {
