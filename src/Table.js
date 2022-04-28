@@ -328,6 +328,8 @@ function findColumn (columns, id) {
 }
 
 function Row ({rowId, row, index, expanded, setExpanded, children, ...props}) { // eslint-disable-line
+  const expand = React.useCallback(() => setExpanded(rowId, true), [rowId, setExpanded])
+  const collapse = React.useCallback(() => setExpanded(rowId, false), [rowId, setExpanded])
   const value = React.useMemo(() => {
     return {
       rowId,
@@ -335,10 +337,10 @@ function Row ({rowId, row, index, expanded, setExpanded, children, ...props}) { 
       index,
       expanded,
       toggleExpanded: () => setExpanded(rowId, !expanded),
-      expand: () => setExpanded(rowId, true),
-      collapse: () => setExpanded(rowId, false)
+      expand,
+      collapse
     }
-  }, [rowId, row, index, expanded, setExpanded])
+  }, [rowId, row, index, expanded, setExpanded, expand, collapse])
   return (
     <RowContext.Provider value={value}>
       <tr {...props}>
