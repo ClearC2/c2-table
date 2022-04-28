@@ -453,6 +453,14 @@ function Row(_ref) {
       props = _objectWithoutProperties(_ref, ["rowId", "row", "index", "expanded", "setExpanded", "children"]);
 
   // eslint-disable-line
+  var expand = _react.default.useCallback(function () {
+    return setExpanded(rowId, true);
+  }, [rowId, setExpanded]);
+
+  var collapse = _react.default.useCallback(function () {
+    return setExpanded(rowId, false);
+  }, [rowId, setExpanded]);
+
   var value = _react.default.useMemo(function () {
     return {
       rowId: rowId,
@@ -462,14 +470,10 @@ function Row(_ref) {
       toggleExpanded: function toggleExpanded() {
         return setExpanded(rowId, !expanded);
       },
-      expand: function expand() {
-        return setExpanded(rowId, true);
-      },
-      collapse: function collapse() {
-        return setExpanded(rowId, false);
-      }
+      expand: expand,
+      collapse: collapse
     };
-  }, [rowId, row, index, expanded, setExpanded]);
+  }, [rowId, row, index, expanded, setExpanded, expand, collapse]);
 
   return _react.default.createElement(RowContext.Provider, {
     value: value

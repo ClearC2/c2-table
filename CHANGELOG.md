@@ -1,3 +1,10 @@
+## [3.0.3](https://github.com/ClearC2/c2-table/compare/v3.0.2...v3.0.3) (2022-04-28)
+
+
+### Bug Fixes
+
+* **expand:** memo expand/collapse funcs ([3628613](https://github.com/ClearC2/c2-table/commit/3628613))
+
 ## [3.0.2](https://github.com/ClearC2/c2-table/compare/v3.0.1...v3.0.2) (2021-11-01)
 
 
