@@ -90,14 +90,12 @@ class ColumnGroup extends Component {
 
 function isColumnGroup (child) {
   child = child || {}
-  return child?.type === ColumnGroup
-  // return areComponentsEqual(child.type, ColumnGroup)
+  return child && child.type === ColumnGroup
 }
 
 function isColumn (child) {
   child = child || {}
-  return child?.type === Column
-  // return areComponentsEqual(child.type, Column)
+  return child && child.type === Column
 }
 
 function getColumns (children) {

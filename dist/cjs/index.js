@@ -3,6 +3,12 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+Object.defineProperty(exports, "Table", {
+  enumerable: true,
+  get: function get() {
+    return _Table.Table;
+  }
+});
 Object.defineProperty(exports, "Column", {
   enumerable: true,
   get: function get() {
@@ -19,12 +25,6 @@ Object.defineProperty(exports, "RowContext", {
   enumerable: true,
   get: function get() {
     return _Table.RowContext;
-  }
-});
-Object.defineProperty(exports, "Table", {
-  enumerable: true,
-  get: function get() {
-    return _Table.Table;
   }
 });
 
