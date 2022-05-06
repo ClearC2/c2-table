@@ -1,3 +1,10 @@
+## [3.0.4](https://github.com/ClearC2/c2-table/compare/v3.0.3...v3.0.4) (2022-05-06)
+
+
+### Bug Fixes
+
+* remove react-hot-loader ([#44](https://github.com/ClearC2/c2-table/issues/44)) ([4ff5e13](https://github.com/ClearC2/c2-table/commit/4ff5e13))
+
 ## [3.0.3](https://github.com/ClearC2/c2-table/compare/v3.0.2...v3.0.3) (2022-04-28)
 
 
