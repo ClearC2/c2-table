@@ -1,32 +1,39 @@
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+var _excluded = ["rowId", "row", "index", "expanded", "setExpanded", "children"];
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); enumerableOnly && (symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; })), keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = null != arguments[i] ? arguments[i] : {}; i % 2 ? ownKeys(Object(source), !0).forEach(function (key) { _defineProperty(target, key, source[key]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)) : ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } return target; }
 
 function _objectWithoutProperties(source, excluded) { if (source == null) return {}; var target = _objectWithoutPropertiesLoose(source, excluded); var key, i; if (Object.getOwnPropertySymbols) { var sourceSymbolKeys = Object.getOwnPropertySymbols(source); for (i = 0; i < sourceSymbolKeys.length; i++) { key = sourceSymbolKeys[i]; if (excluded.indexOf(key) >= 0) continue; if (!Object.prototype.propertyIsEnumerable.call(source, key)) continue; target[key] = source[key]; } } return target; }
 
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
 function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
-
-function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { areComponentsEqual } from 'react-hot-loader';
 var defaultClickableClass = 'clickable';
 
 var noop = function noop() {};
@@ -35,15 +42,15 @@ var StringOrFunc = PropTypes.oneOfType([PropTypes.string, PropTypes.func]);
 var StringOrObject = PropTypes.oneOfType([PropTypes.string, PropTypes.object]);
 var StringObjectOrFunc = PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.func]);
 
-var Column =
-/*#__PURE__*/
-function (_Component) {
+var Column = /*#__PURE__*/function (_Component) {
   _inherits(Column, _Component);
+
+  var _super = _createSuper(Column);
 
   function Column() {
     _classCallCheck(this, Column);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Column).apply(this, arguments));
+    return _super.apply(this, arguments);
   }
 
   _createClass(Column, [{
@@ -94,15 +101,15 @@ _defineProperty(Column, "defaultProps", {
   sortOnHeaderClick: true
 });
 
-var ColumnGroup =
-/*#__PURE__*/
-function (_Component2) {
+var ColumnGroup = /*#__PURE__*/function (_Component2) {
   _inherits(ColumnGroup, _Component2);
+
+  var _super2 = _createSuper(ColumnGroup);
 
   function ColumnGroup() {
     _classCallCheck(this, ColumnGroup);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(ColumnGroup).apply(this, arguments));
+    return _super2.apply(this, arguments);
   }
 
   _createClass(ColumnGroup, [{
@@ -143,13 +150,17 @@ _defineProperty(ColumnGroup, "defaultProps", {
 });
 
 function isColumnGroup(child) {
+  var _child;
+
   child = child || {};
-  return areComponentsEqual(child.type, ColumnGroup);
+  return ((_child = child) === null || _child === void 0 ? void 0 : _child.type) === ColumnGroup; // return areComponentsEqual(child.type, ColumnGroup)
 }
 
 function isColumn(child) {
+  var _child2;
+
   child = child || {};
-  return areComponentsEqual(child.type, Column);
+  return ((_child2 = child) === null || _child2 === void 0 ? void 0 : _child2.type) === Column; // return areComponentsEqual(child.type, Column)
 }
 
 function getColumns(children) {
@@ -171,7 +182,7 @@ var ColumnOrColumnGroup = function ColumnOrColumnGroup(props, propName) {
   });
 };
 
-var RowContext = React.createContext({
+var RowContext = /*#__PURE__*/React.createContext({
   row: null,
   index: null,
   rowId: null,
@@ -181,14 +192,12 @@ var RowContext = React.createContext({
   toggleExpanded: function toggleExpanded() {}
 });
 
-var Header =
-/*#__PURE__*/
-function (_Component3) {
+var Header = /*#__PURE__*/function (_Component3) {
   _inherits(Header, _Component3);
 
-  function Header() {
-    var _getPrototypeOf2;
+  var _super3 = _createSuper(Header);
 
+  function Header() {
     var _this;
 
     _classCallCheck(this, Header);
@@ -197,9 +206,9 @@ function (_Component3) {
       args[_key] = arguments[_key];
     }
 
-    _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(Header)).call.apply(_getPrototypeOf2, [this].concat(args)));
+    _this = _super3.call.apply(_super3, [this].concat(args));
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onHeaderClick", function () {
+    _defineProperty(_assertThisInitialized(_this), "onHeaderClick", function () {
       var dir = _this.props.orderDir === 'asc' || !_this.props.orderDir ? 'desc' : 'asc';
 
       _this.props.setOrderColumn(_this.props.id);
@@ -220,7 +229,7 @@ function (_Component3) {
           return this.props.header(this.getSortSymbol(), this.onHeaderClick);
 
         default:
-          return React.createElement("span", null, this.props.header || this.props.id, " ", this.getSortSymbol());
+          return /*#__PURE__*/React.createElement("span", null, this.props.header || this.props.id, " ", this.getSortSymbol());
       }
     }
   }, {
@@ -234,7 +243,7 @@ function (_Component3) {
       var _this$props = this.props,
           sortDescIcon = _this$props.sortDescIcon,
           sortAscIcon = _this$props.sortAscIcon;
-      return this.isCurrentSortColumn(column) ? this.props.orderDir === 'asc' ? React.createElement("span", null, sortAscIcon || '↑') : React.createElement("span", null, sortDescIcon || '↓') : null;
+      return this.isCurrentSortColumn(column) ? this.props.orderDir === 'asc' ? /*#__PURE__*/React.createElement("span", null, sortAscIcon || '↑') : /*#__PURE__*/React.createElement("span", null, sortDescIcon || '↓') : null;
     }
   }, {
     key: "getClickableClass",
@@ -245,7 +254,7 @@ function (_Component3) {
     key: "renderFirstRowHeader",
     value: function renderFirstRowHeader() {
       var colSpan = this.props.children ? this.props.children.length : 1;
-      return React.createElement("th", {
+      return /*#__PURE__*/React.createElement("th", {
         colSpan: colSpan || 1,
         rowSpan: this.props.hasGroups && colSpan === 1 ? 2 : 1,
         onClick: this.props.sortOnHeaderClick === false ? noop : this.onHeaderClick,
@@ -256,7 +265,7 @@ function (_Component3) {
   }, {
     key: "renderSecondRowHeader",
     value: function renderSecondRowHeader() {
-      return React.createElement("th", {
+      return /*#__PURE__*/React.createElement("th", {
         key: this.props.id,
         onClick: this.onHeaderClick,
         className: "".concat(this.props.className || '', " ").concat(this.getClickableClass()).trim()
@@ -294,15 +303,15 @@ _defineProperty(Header, "defaultProps", {
   onSort: function onSort() {}
 });
 
-var Thead =
-/*#__PURE__*/
-function (_Component4) {
+var Thead = /*#__PURE__*/function (_Component4) {
   _inherits(Thead, _Component4);
+
+  var _super4 = _createSuper(Thead);
 
   function Thead() {
     _classCallCheck(this, Thead);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Thead).apply(this, arguments));
+    return _super4.apply(this, arguments);
   }
 
   _createClass(Thead, [{
@@ -320,11 +329,11 @@ function (_Component4) {
       var _this2 = this;
 
       var hasGroups = this.hasGroups();
-      return React.createElement("tr", null, this.props.onExpand ? React.createElement("th", {
+      return /*#__PURE__*/React.createElement("tr", null, this.props.onExpand ? /*#__PURE__*/React.createElement("th", {
         rowSpan: hasGroups ? 2 : 1,
         className: this.props.expandClassName
       }) : null, getColumns(this.props.children).map(function (column) {
-        return React.createElement(Header, {
+        return /*#__PURE__*/React.createElement(Header, {
           key: column.props.id,
           orderColumn: _this2.props.orderColumn,
           orderDir: _this2.props.orderDir,
@@ -348,10 +357,10 @@ function (_Component4) {
     value: function renderSecondRow() {
       var _this3 = this;
 
-      return React.createElement("tr", null, getColumns(this.props.children).map(function (column) {
+      return /*#__PURE__*/React.createElement("tr", null, getColumns(this.props.children).map(function (column) {
         if (!isColumnGroup(column)) return null;
         return getColumns(column.props.children).map(function (child) {
-          return React.createElement(Header, {
+          return /*#__PURE__*/React.createElement(Header, {
             key: child.props.id,
             orderColumn: _this3.props.orderColumn,
             orderDir: _this3.props.orderDir,
@@ -373,7 +382,7 @@ function (_Component4) {
   }, {
     key: "render",
     value: function render() {
-      return React.createElement("thead", null, this.renderFirstRow(), this.hasGroups() ? this.renderSecondRow() : null);
+      return /*#__PURE__*/React.createElement("thead", null, this.renderFirstRow(), this.hasGroups() ? this.renderSecondRow() : null);
     }
   }]);
 
@@ -425,7 +434,7 @@ function Row(_ref) {
       expanded = _ref.expanded,
       setExpanded = _ref.setExpanded,
       children = _ref.children,
-      props = _objectWithoutProperties(_ref, ["rowId", "row", "index", "expanded", "setExpanded", "children"]);
+      props = _objectWithoutProperties(_ref, _excluded);
 
   // eslint-disable-line
   var expand = React.useCallback(function () {
@@ -447,30 +456,30 @@ function Row(_ref) {
       collapse: collapse
     };
   }, [rowId, row, index, expanded, setExpanded, expand, collapse]);
-  return React.createElement(RowContext.Provider, {
+  return /*#__PURE__*/React.createElement(RowContext.Provider, {
     value: value
-  }, React.createElement("tr", props, children));
+  }, /*#__PURE__*/React.createElement("tr", props, children));
 }
 
-var Tbody =
-/*#__PURE__*/
-function (_Component5) {
+var Tbody = /*#__PURE__*/function (_Component5) {
   _inherits(Tbody, _Component5);
+
+  var _super5 = _createSuper(Tbody);
 
   function Tbody(props) {
     var _this4;
 
     _classCallCheck(this, Tbody);
 
-    _this4 = _possibleConstructorReturn(this, _getPrototypeOf(Tbody).call(this, props));
+    _this4 = _super5.call(this, props);
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this4)), "setExpanded", function (rowId, expanded) {
+    _defineProperty(_assertThisInitialized(_this4), "setExpanded", function (rowId, expanded) {
       _this4.setState({
-        expanded: _objectSpread({}, _this4.state.expanded, _defineProperty({}, rowId, expanded))
+        expanded: _objectSpread(_objectSpread({}, _this4.state.expanded), {}, _defineProperty({}, rowId, expanded))
       });
     });
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this4)), "getRowClassName", function (row, index) {
+    _defineProperty(_assertThisInitialized(_this4), "getRowClassName", function (row, index) {
       var rowClassName = _this4.props.rowClassName;
       if (typeof rowClassName === 'string') return rowClassName;
       if (typeof rowClassName === 'function') return rowClassName(row, index);
@@ -522,7 +531,7 @@ function (_Component5) {
         });
       };
 
-      return React.createElement("td", {
+      return /*#__PURE__*/React.createElement("td", {
         className: "".concat(expandClassName || '', " ").concat(clickableClass || defaultClickableClass).trim(),
         onClick: onClick
       }, this.state.expanded[id] ? expandedIcon || '-' : collapsedIcon || '+');
@@ -551,7 +560,7 @@ function (_Component5) {
         var expanded = _this6.state.expanded[id] || false;
 
         if (isFullLength && isFullLength(row, index)) {
-          rows.push(React.createElement(Row, {
+          rows.push( /*#__PURE__*/React.createElement(Row, {
             key: "tr-".concat(rId),
             id: "tr-".concat(rId),
             rowId: id,
@@ -560,11 +569,11 @@ function (_Component5) {
             expanded: expanded,
             setExpanded: _this6.setExpanded,
             className: rowClassName
-          }, React.createElement("td", {
+          }, /*#__PURE__*/React.createElement("td", {
             colSpan: columns.length + (onExpand ? 1 : 0)
           }, fullLengthCell(row, index))));
         } else {
-          rows.push(React.createElement(Row, {
+          rows.push( /*#__PURE__*/React.createElement(Row, {
             key: "tr-".concat(rId),
             id: "tr-".concat(rId),
             rowId: id,
@@ -574,7 +583,7 @@ function (_Component5) {
             setExpanded: _this6.setExpanded,
             className: rowClassName
           }, onExpand ? _this6.expandCell(row, index) : null, columns.map(function (column) {
-            return React.createElement("td", {
+            return /*#__PURE__*/React.createElement("td", {
               key: "td-".concat(rId, "-").concat(column.props.id),
               className: _this6.cellClassName(column, row, index)
             }, tdContent(column, row, index));
@@ -582,7 +591,7 @@ function (_Component5) {
         }
 
         if (onExpand && _this6.state.expanded[id]) {
-          rows.push(React.createElement(Row, {
+          rows.push( /*#__PURE__*/React.createElement(Row, {
             key: "tr-".concat(rId, "-expanded"),
             rowId: id,
             row: row,
@@ -590,25 +599,25 @@ function (_Component5) {
             expanded: expanded,
             setExpanded: _this6.setExpanded,
             className: "".concat(rowClassName, "-expanded")
-          }, React.createElement("td", {
+          }, /*#__PURE__*/React.createElement("td", {
             colSpan: columns.length + 1
-          }, React.createElement(onExpand, {
+          }, /*#__PURE__*/React.createElement(onExpand, {
             row: row
           }))));
         }
       });
 
       if (rows.length === 0) {
-        rows.push(React.createElement("tr", {
+        rows.push( /*#__PURE__*/React.createElement("tr", {
           key: "tr-empty"
-        }, React.createElement("td", {
+        }, /*#__PURE__*/React.createElement("td", {
           colSpan: columns.length + (onExpand ? 1 : 0)
-        }, onEmpty || React.createElement("div", {
+        }, onEmpty || /*#__PURE__*/React.createElement("div", {
           className: "text-center"
         }, "No data..."))));
       }
 
-      return React.createElement("tbody", null, rows);
+      return /*#__PURE__*/React.createElement("tbody", null, rows);
     }
   }]);
 
@@ -662,14 +671,12 @@ function tdOrderValue(column, row) {
   }
 }
 
-var Table =
-/*#__PURE__*/
-function (_Component6) {
+var Table = /*#__PURE__*/function (_Component6) {
   _inherits(Table, _Component6);
 
-  function Table() {
-    var _getPrototypeOf3;
+  var _super6 = _createSuper(Table);
 
+  function Table() {
     var _this7;
 
     _classCallCheck(this, Table);
@@ -678,11 +685,11 @@ function (_Component6) {
       args[_key2] = arguments[_key2];
     }
 
-    _this7 = _possibleConstructorReturn(this, (_getPrototypeOf3 = _getPrototypeOf(Table)).call.apply(_getPrototypeOf3, [this].concat(args)));
+    _this7 = _super6.call.apply(_super6, [this].concat(args));
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this7)), "state", {});
+    _defineProperty(_assertThisInitialized(_this7), "state", {});
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this7)), "setOrderColumn", function (column) {
+    _defineProperty(_assertThisInitialized(_this7), "setOrderColumn", function (column) {
       if (!_this7.props.sortEnabled) return;
 
       _this7.setState({
@@ -690,7 +697,7 @@ function (_Component6) {
       });
     });
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this7)), "setOrderDir", function () {
+    _defineProperty(_assertThisInitialized(_this7), "setOrderDir", function () {
       var dir = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'desc';
       if (!_this7.props.sortEnabled) return;
 
@@ -699,7 +706,7 @@ function (_Component6) {
       });
     });
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this7)), "getPagedData", function () {
+    _defineProperty(_assertThisInitialized(_this7), "getPagedData", function () {
       var data = _this7.getData();
 
       if (_this7.props.page === undefined || _this7.props.rowsPerPage === undefined) return data;
@@ -768,11 +775,11 @@ function (_Component6) {
     value: function render() {
       var data = this.getData();
       var pagedData = this.getPagedData();
-      return React.createElement("table", {
+      return /*#__PURE__*/React.createElement("table", {
         className: this.props.className,
         id: this.props.id,
         style: this.props.style
-      }, React.createElement(Thead, {
+      }, /*#__PURE__*/React.createElement(Thead, {
         id: this.props.id,
         orderColumn: this.state.orderColumn,
         orderDir: this.state.orderDir,
@@ -785,7 +792,7 @@ function (_Component6) {
         sortDescIcon: this.props.sortDescIcon,
         sortAscIcon: this.props.sortAscIcon,
         onSort: this.props.onSort
-      }), React.createElement(Tbody, {
+      }), /*#__PURE__*/React.createElement(Tbody, {
         id: this.props.id,
         rowId: this.props.rowId,
         expandClassName: this.props.expandClassName,
@@ -800,7 +807,7 @@ function (_Component6) {
         isFullLength: this.props.isFullLength,
         fullLengthCell: this.props.fullLengthCell,
         data: pagedData
-      }), React.createElement(Tfoot, {
+      }), /*#__PURE__*/React.createElement(Tfoot, {
         children: this.props.children,
         onExpand: this.props.onExpand,
         data: data
@@ -889,15 +896,15 @@ _defineProperty(Table, "defaultProps", {
   sortEnabled: true
 });
 
-var Tfoot =
-/*#__PURE__*/
-function (_Component7) {
+var Tfoot = /*#__PURE__*/function (_Component7) {
   _inherits(Tfoot, _Component7);
+
+  var _super7 = _createSuper(Tfoot);
 
   function Tfoot() {
     _classCallCheck(this, Tfoot);
 
-    return _possibleConstructorReturn(this, _getPrototypeOf(Tfoot).apply(this, arguments));
+    return _super7.apply(this, arguments);
   }
 
   _createClass(Tfoot, [{
@@ -911,8 +918,8 @@ function (_Component7) {
         return last || column.props.footer;
       }, false);
       if (!footerValues || !this.props.data.length) return null;
-      return React.createElement("tfoot", null, React.createElement("tr", null, this.props.onExpand ? React.createElement("td", null) : null, flattenColumns(this.props.children).map(function (column) {
-        return React.createElement("td", {
+      return /*#__PURE__*/React.createElement("tfoot", null, /*#__PURE__*/React.createElement("tr", null, this.props.onExpand ? /*#__PURE__*/React.createElement("td", null) : null, flattenColumns(this.props.children).map(function (column) {
+        return /*#__PURE__*/React.createElement("td", {
           key: column.props.id,
           className: column.props.footerClassName || ''
         }, column.props.footer ? column.props.footer(_this8.props.data) : null);
