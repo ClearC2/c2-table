@@ -26,7 +26,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { areComponentsEqual } from 'react-hot-loader';
 var defaultClickableClass = 'clickable';
 
 var noop = function noop() {};
@@ -144,12 +143,12 @@ _defineProperty(ColumnGroup, "defaultProps", {
 
 function isColumnGroup(child) {
   child = child || {};
-  return areComponentsEqual(child.type, ColumnGroup);
+  return child && child.type === ColumnGroup;
 }
 
 function isColumn(child) {
   child = child || {};
-  return areComponentsEqual(child.type, Column);
+  return child && child.type === Column;
 }
 
 function getColumns(children) {

@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types'
-import {areComponentsEqual} from 'react-hot-loader'
 
 const defaultClickableClass = 'clickable'
 
@@ -91,12 +90,12 @@ class ColumnGroup extends Component {
 
 function isColumnGroup (child) {
   child = child || {}
-  return areComponentsEqual(child.type, ColumnGroup)
+  return child && child.type === ColumnGroup
 }
 
 function isColumn (child) {
   child = child || {}
-  return areComponentsEqual(child.type, Column)
+  return child && child.type === Column
 }
 
 function getColumns (children) {
